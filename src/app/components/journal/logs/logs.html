@@ -1,0 +1,61 @@
+<app-glass-card id="logs-activity-card">
+    <div class="table-header" id="logs-table-header">
+        <h3>Diagnostic Activity Log</h3>
+        @if (logs().length > 0) {
+        <app-button variant="secondary" size="icon" (click)="clearAllLogs()" id="clear-all-logs-btn">
+            <app-trash-icon [width]="14" [height]="14" [showDetails]="true" id="clear-all-trash-icon"></app-trash-icon>
+            Clear All Logs
+        </app-button>
+        }
+    </div>
+
+    <div class="table-wrapper" id="logs-table-wrapper">
+        @if (logs().length > 0) {
+        <app-table [data]="logs()" [columns]="columns" id="activity-logs-table">
+            <!-- Date Column -->
+            <ng-template appTableCell="date" let-row>
+                <span style="white-space: nowrap;">{{ row.date }}</span>
+            </ng-template>
+
+            <!-- Field Column -->
+            <ng-template appTableCell="field" let-row>
+                <strong>{{ row.field }}</strong>
+            </ng-template>
+
+            <!-- Diagnosis Column -->
+            <ng-template appTableCell="diseaseId" let-row>
+                {{ getDiseaseName(row.diseaseId) }}
+            </ng-template>
+
+            <!-- Severity Column -->
+            <ng-template appTableCell="severity" let-row>
+                <span class="table-badge" [class.low]="row.severity < 15"
+                    [class.medium]="row.severity >= 15 && row.severity < 35" [class.high]="row.severity >= 35"
+                    [attr.id]="'severity-badge-' + row.id">
+                    {{ row.severity }}% {{ getSeverityLabel(row.severity) }}
+                </span>
+            </ng-template>
+
+            <!-- Actions Column -->
+            <ng-template appTableCell="actions" let-row>
+                <div class="action-btn-group" [attr.id]="'action-group-' + row.id">
+                    <app-button variant="action-icon" actionVariant="edit" (click)="editLog(row)"
+                        [id]="'edit-btn-' + row.id" ariaLabel="Edit entry">
+                        <app-edit-icon></app-edit-icon>
+                    </app-button>
+                    <app-button variant="action-icon" actionVariant="delete"
+                        (click)="deleteLog(row.id)" [id]="'delete-btn-' + row.id" ariaLabel="Delete entry">
+                        <app-trash-icon [width]="12" [height]="12" [showDetails]="false"></app-trash-icon>
+                    </app-button>
+                </div>
+            </ng-template>
+        </app-table>
+        } @else {
+        <div class="table-empty-state" id="table-empty-state-view">
+            <app-document-icon [width]="48" [height]="48" style="color: var(--accent-gold); margin-bottom: 12px;"
+                id="empty-state-doc-icon"></app-document-icon>
+            <p>Scouting journal is empty. Add observations above, or complete an AI Scan to populate.</p>
+        </div>
+        }
+    </div>
+</app-glass-card>

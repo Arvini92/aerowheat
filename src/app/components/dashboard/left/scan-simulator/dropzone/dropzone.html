@@ -1,0 +1,91 @@
+<div class="dropzone" id="dropzone"
+     [class.is-dragging]="isDragging()"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave($event)"
+     (drop)="onDrop($event)">
+
+  <!-- Technical Decorations -->
+  <div class="technical-decoration top-2 left-2">SYS_READY // V024</div>
+  <div class="technical-decoration bottom-2 right-2">00:00:24:12</div>
+
+  <!-- STATE 1: Idle (No camera, no image) -->
+  @if (!isCameraActive() && !capturedImage()) {
+    <label class="dropzone-default" id="dropzone-default-view" for="file-input" role="button" tabindex="0" (keydown.enter)="fileInput.click()" (keydown.space)="fileInput.click()">
+      <div class="viewfinder-corners">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+      </div>
+
+      <div class="mb-6 flex justify-center">
+        <div class="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center border border-primary/20 shadow-[inset_0_0_20px_rgba(74,214,109,0.05)]">
+          <mat-icon class="text-primary !text-3xl h-auto w-auto">monitoring</mat-icon>
+        </div>
+      </div>
+      
+      <h4 class="text-lg font-bold text-white tracking-tight">Initialize Wheat Scan</h4>
+      <p class="text-[11px] text-zinc-500 mt-2 max-w-[200px] leading-relaxed">Drag imagery or activate high-resolution camera for AI diagnosis</p>
+      
+      <input type="file" #fileInput id="file-input" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+      
+      <div class="flex items-center gap-3 mt-8">
+        <app-button type="button" 
+                class="technical-btn" 
+                (click)="fileInput.click()"
+                matTooltip="Upload Image">
+          <mat-icon>upload_file</mat-icon>
+          <span>Select File</span>
+        </app-button>
+
+        <div class="w-px h-8 bg-white/10 mx-1"></div>
+
+        <app-button type="button" 
+                class="technical-btn" 
+                (click)="startCamera($event)"
+                matTooltip="Live Camera Scan">
+          <mat-icon>videocam</mat-icon>
+          <span>Live Camera</span>
+        </app-button>
+      </div>
+    </label>
+  }
+
+  <!-- STATE 2: Camera Viewfinder Active -->
+  @if (isCameraActive()) {
+    <div class="absolute inset-0 w-full h-full flex flex-col justify-between bg-black z-10 overflow-hidden">
+      <video #video class="w-full h-full object-cover opacity-80" autoplay playsinline muted></video>
+      <canvas #canvas style="display: none;"></canvas>
+      
+      <div class="viewfinder-corners active">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+      </div>
+      
+      <!-- Aesthetic scan line -->
+      <div class="absolute inset-0 border border-primary/20 pointer-events-none"></div>
+      <div class="absolute inset-x-0 h-[1px] bg-primary/40 animate-scanning z-20"></div>
+
+      <div class="absolute top-4 left-4 tech-label">
+        <div class="indicator-dot active"></div>
+        REC // HIGH_RES
+      </div>
+
+      <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-4 z-20">
+        <app-button id="cancel" type="button" class="btn-tech-outline" (click)="stopCamera($event)">Cancel</app-button>
+        <app-button type="button" class="btn-tech-primary" (click)="capture($event)">Capture Signature</app-button>
+      </div>
+    </div>
+  }
+
+  <!-- STATE 3: Image Selected / Captured Preview -->
+  @if (capturedImage()) {
+    <div class="scanner-preview">
+      <img [src]="capturedImage()" alt="Preview" />
+      <app-button type="button" class="absolute top-2 right-2 btn btn-secondary" (click)="capturedImage.set(null)" matTooltip="Clear">Clear</app-button>
+    </div>
+  }
+
+</div>

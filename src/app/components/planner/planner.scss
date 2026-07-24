@@ -1,0 +1,356 @@
+.planner-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.planner-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.form-group label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Legacy half selector kept for journal/record compatibility */
+.form-group.half {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+}
+
+/* New col selector used by planner form */
+.form-group.col {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.planner-placeholder {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.planner-placeholder svg {
+  margin-bottom: 12px;
+  animation: float-icon 4s ease-in-out infinite;
+}
+
+@keyframes float-icon {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+
+.planner-placeholder h3 {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.planner-placeholder p {
+  font-size: 11px;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.35;
+}
+
+.treatment-report {
+  animation: view-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.report-top-banner {
+  margin-bottom: 12px;
+}
+
+.report-main-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.report-main-divider {
+  height: 2px;
+  background: var(--primary);
+  width: 100%;
+  border-radius: 1px;
+}
+
+.treatment-report .report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.report-brand {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.report-meta-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border-subtle);
+  font-size: 11px;
+  margin-bottom: 14px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meta-label {
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+}
+
+.meta-val {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.report-section-block {
+  border-left: 2px solid transparent;
+  padding-left: 10px;
+  margin-bottom: 14px;
+}
+
+.block-title {
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.block-body {
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bullet-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bullet-list li {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.35;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.bullet-arrow {
+  color: var(--primary);
+  font-size: 9px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.report-section-block.urgent { border-color: var(--color-danger); }
+.report-section-block.urgent .block-title { color: var(--color-danger); }
+
+.report-section-block.warning { border-color: var(--accent-gold); }
+.report-section-block.warning .block-title { color: var(--accent-gold); }
+
+.report-section-block.info { border-color: var(--color-info); }
+.report-section-block.info .block-title { color: var(--color-info); }
+
+.report-section-block.success { border-color: var(--primary); }
+.report-section-block.success .block-title { color: var(--primary); }
+
+/* --- PRINT MODE STYLES FOR PLANNER REPORT --- */
+@media print {
+  app-form,
+  .planner-form,
+  #planner-placeholder-view,
+  #report-header-actions,
+  #print-plan-btn,
+  .print-hidden,
+  button,
+  app-button {
+    display: none !important;
+  }
+
+  .planner-layout {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .glass-card,
+  #planner-report-card {
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #111827 !important;
+  }
+
+  .glass-card::after {
+    display: none !important;
+  }
+
+  .treatment-report {
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
+
+  .report-top-banner {
+    display: block !important;
+    margin-bottom: 20px !important;
+  }
+
+  .report-main-title {
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    color: #000000 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.02em !important;
+    margin-bottom: 8px !important;
+  }
+
+  .report-main-divider {
+    height: 2px !important;
+    background-color: #000000 !important;
+    width: 100% !important;
+  }
+
+  .report-meta-box {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px 24px !important;
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 14px 18px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .meta-item {
+    display: block !important;
+  }
+
+  .meta-label {
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    font-size: 13px !important;
+    display: inline-block !important;
+    margin-right: 6px !important;
+  }
+
+  .meta-val {
+    color: #111827 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+  }
+
+  .report-section-block {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-left: 5px solid #111827 !important;
+    border-radius: 8px !important;
+    padding: 14px 18px !important;
+    margin-bottom: 16px !important;
+    box-shadow: none !important;
+  }
+
+  .block-title {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    letter-spacing: 0.04em !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 8px !important;
+    text-transform: uppercase !important;
+  }
+
+  .block-body {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    color: #1f2937 !important;
+  }
+
+  .bullet-list {
+    margin-top: 8px !important;
+    gap: 6px !important;
+  }
+
+  .bullet-list li {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    color: #1f2937 !important;
+  }
+
+  .bullet-arrow {
+    color: #111827 !important;
+    font-size: 10px !important;
+  }
+
+  .report-section-block.urgent,
+  .report-section-block.warning,
+  .report-section-block.info,
+  .report-section-block.success {
+    border-left-color: #111827 !important;
+  }
+}
+

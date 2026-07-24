@@ -1,0 +1,21 @@
+{
+  "name": "AeroWheat Diagnostics",
+  "short_name": "AeroWheat",
+  "description": "Advanced wheat disease diagnostics",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4AD66D",
+  "icons": [
+   {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

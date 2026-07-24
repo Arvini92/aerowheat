@@ -1,0 +1,152 @@
+<div class="wizard-active" id="wizard-active-view">
+  <div class="card-header" id="wizard-header">
+    <h3>Symptom Diagnostic Wizard</h3>
+  </div>
+  
+  <!-- Progress tracker -->
+  <div class="wizard-steps-indicator" id="wizard-progress-tracker">
+    <div class="step-indicator" [class.active]="wizardStep() === 1" [class.completed]="wizardStep() > 1">1<span>Anatomy</span></div>
+    <div class="step-indicator" [class.active]="wizardStep() === 2" [class.completed]="wizardStep() > 2">2<span>Symptoms</span></div>
+    <div class="step-indicator" [class.active]="wizardStep() === 3" [class.completed]="wizardStep() > 3">3<span>Weather</span></div>
+    <div class="step-indicator" [class.active]="wizardStep() === 4" [class.completed]="wizardStep() > 4">4<span>Growth</span></div>
+  </div>
+
+  <form class="wizard-form" id="wizard-form-element">
+    <!-- Step 1: Anatomy -->
+    <div class="wizard-step" [class.active]="wizardStep() === 1" id="wizard-step-1">
+      <h4>Which plant sections are affected?</h4>
+      <p class="step-desc">Select all anatomical parts showing indicators of disease.</p>
+      <div class="options-vertical">
+        <app-checkbox
+          name="anatomy_head"
+          label="Spike / Head / Grain"
+          [checked]="wizardAnatomy()['head']"
+          (checkedChange)="toggleAnatomy('head')"
+        />
+        <app-checkbox
+          name="anatomy_leaves"
+          label="Leaves (Flag leaf or lower leaves)"
+          [checked]="wizardAnatomy()['leaves']"
+          (checkedChange)="toggleAnatomy('leaves')"
+        />
+        <app-checkbox
+          name="anatomy_stem"
+          label="Stem / Straw / Stalk"
+          [checked]="wizardAnatomy()['stem']"
+          (checkedChange)="toggleAnatomy('stem')"
+        />
+        <app-checkbox
+          name="anatomy_roots"
+          label="Roots / Crown / Seedling stem base"
+          [checked]="wizardAnatomy()['roots']"
+          (checkedChange)="toggleAnatomy('roots')"
+        />
+      </div>
+    </div>
+
+    <!-- Step 2: Physical Symptoms -->
+    <div class="wizard-step" [class.active]="wizardStep() === 2" id="wizard-step-2">
+      <h4>Select visible physical signs:</h4>
+      <p class="step-desc">Pick physical markers appearing on the selected anatomy.</p>
+      <div class="options-grid" id="symptoms-checklist-grid">
+        @for (opt of wizardSymptomsOptions(); track opt.id) {
+          <app-checkbox
+            [labelId]="'symptom-label-' + opt.id"
+            [name]="'symptom_' + opt.id"
+            [label]="opt.text"
+            [checked]="wizardSymptoms()[opt.id]"
+            (checkedChange)="toggleSymptom(opt.id)"
+          />
+        }
+      </div>
+    </div>
+
+    <!-- Step 3: Weather -->
+    <div class="wizard-step" [class.active]="wizardStep() === 3" id="wizard-step-3">
+      <h4>Describe recent environmental conditions:</h4>
+      <p class="step-desc">Weather influences fungal germination and spore dispersal.</p>
+      <div class="options-grid" id="weather-radio-grid">
+        <app-radio
+          name="weather"
+          value="humid_warm"
+          label="Humid & Warm"
+          subtitle="Frequent rain, dew, temperatures 15-25°C"
+          [checked]="wizardWeather() === 'humid_warm'"
+          (valueChange)="wizardWeather.set($event)"
+        />
+        <app-radio
+          name="weather"
+          value="humid_cool"
+          label="Humid & Cool"
+          subtitle="Persistent mist/rain, temperatures 10-18°C"
+          [checked]="wizardWeather() === 'humid_cool'"
+          (valueChange)="wizardWeather.set($event)"
+        />
+        <app-radio
+          name="weather"
+          value="dry_warm"
+          label="Dry & Hot"
+          subtitle="Low precipitation, temperatures >25°C"
+          [checked]="wizardWeather() === 'dry_warm'"
+          (valueChange)="wizardWeather.set($event)"
+        />
+        <app-radio
+          name="weather"
+          value="wet_soil"
+          label="Wet/Waterlogged Soil"
+          subtitle="Poor field drainage, high standing soil moisture"
+          [checked]="wizardWeather() === 'wet_soil'"
+          (valueChange)="wizardWeather.set($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Step 4: Growth Stage -->
+    <div class="wizard-step" [class.active]="wizardStep() === 4" id="wizard-step-4">
+      <h4>What is the crop growth stage?</h4>
+      <p class="step-desc">Growth stages influence vulnerability window to pathogens.</p>
+      <div class="options-vertical" id="growth-stage-vertical-list">
+        <app-radio
+          name="stage"
+          value="seedling"
+          label="Seedling / Early tillering (Feekes 1-3)"
+          [checked]="wizardStage() === 'seedling'"
+          (valueChange)="wizardStage.set($event)"
+        />
+        <app-radio
+          name="stage"
+          value="jointing"
+          label="Jointing / Stem elongation (Feekes 4-8)"
+          [checked]="wizardStage() === 'jointing'"
+          (valueChange)="wizardStage.set($event)"
+        />
+        <app-radio
+          name="stage"
+          value="flag_leaf"
+          label="Flag Leaf emergence / Booting (Feekes 9-10)"
+          [checked]="wizardStage() === 'flag_leaf'"
+          (valueChange)="wizardStage.set($event)"
+        />
+        <app-radio
+          name="stage"
+          value="flowering"
+          label="Heading / Flowering (Feekes 10.1-10.5)"
+          [checked]="wizardStage() === 'flowering'"
+          (valueChange)="wizardStage.set($event)"
+        />
+        <app-radio
+          name="stage"
+          value="ripening"
+          label="Grain filling / Ripening (Feekes 11)"
+          [checked]="wizardStage() === 'ripening'"
+          (valueChange)="wizardStage.set($event)"
+        />
+      </div>
+    </div>
+  </form>
+
+  <div class="wizard-footer" id="wizard-footer-buttons">
+    <app-button variant="secondary" [style.visibility]="wizardStep() === 1 ? 'hidden' : 'visible'" (click)="wizardPrev()" id="wizard-back-btn">Back</app-button>
+    <app-button variant="primary" (click)="wizardNext()" id="wizard-next-btn">{{ wizardStep() === 4 ? 'Diagnose Crop' : 'Next' }}</app-button>
+  </div>
+</div>

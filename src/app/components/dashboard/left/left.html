@@ -1,0 +1,21 @@
+<app-glass-card extraClass="scanner-card" id="ai-scanner-card">
+    <div class="card-header" id="scanner-card-header">
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]"></div>
+            <h3>AI Crop Scan Simulator</h3>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="status-indicator">
+                <div class="indicator-dot active"></div>
+                <span>Uplink: Active</span>
+            </div>
+            <div class="status-indicator">
+                <div class="indicator-dot active"></div>
+                <span>Vision Engine: 24v</span>
+            </div>
+        </div>
+    </div>
+
+    <app-scan-simulator (scanComplete)="onScanComplete($event)">
+    </app-scan-simulator>
+</app-glass-card>

@@ -1,0 +1,28 @@
+<header class="app-header" id="app-header-nav">
+    <div class="header-container" id="header-container-wrapper">
+        <div class="logo-area" [routerLink]="'/dashboard'" id="app-logo-area">
+            <div class="logo-icon-wrapper">
+                <mat-icon class="text-primary !text-2xl">radar</mat-icon>
+                <div class="logo-pulse"></div>
+            </div>
+            <div class="logo-text" id="logo-text-block">
+                <span class="brand-name">AeroWheat</span>
+                <span class="brand-tagline">Agronomic Monitoring Terminal</span>
+            </div>
+        </div>
+
+        <nav class="nav-links" id="app-nav-links">
+            <a [routerLink]="'/dashboard'" routerLinkActive="active" class="nav-item">SCANNER</a>
+            <a [routerLink]="'/explorer'" routerLinkActive="active" class="nav-item">EXPLORER</a>
+            <a [routerLink]="'/library'" routerLinkActive="active" class="nav-item">LIBRARY</a>
+            <a [routerLink]="'/planner'" routerLinkActive="active" class="nav-item">PLANNER</a>
+            <a [routerLink]="'/journal'" routerLinkActive="active" class="nav-item">JOURNAL</a>
+        </nav>
+
+        <div class="status-group" id="header-status-group">
+            <div class="flex flex-col items-end">
+                <div [class]="appState.modelStatusClass()" id="model-status-pill">{{ appState.modelStatus() }}</div>
+            </div>
+        </div>
+    </div>
+</header>

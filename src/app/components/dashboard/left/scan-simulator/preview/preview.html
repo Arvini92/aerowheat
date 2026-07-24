@@ -1,0 +1,82 @@
+<div class="scanner-preview" id="scanner-preview-view">
+    <img [src]="previewImgSrc()" alt="Crop preview" referrerpolicy="no-referrer" id="preview-image-element"
+        #previewImageElement>
+
+    <!-- Heatmap & Bounding Box Overlay -->
+    @for (spot of heatmapSpots(); track $index) {
+        @if (spot.width && spot.height) {
+            <!-- YOLO Bounding Box Style (Red) -->
+            <div class="detection-box" 
+                 [style.left.%]="spot.left" 
+                 [style.top.%]="spot.top" 
+                 [style.width.%]="spot.width" 
+                 [style.height.%]="spot.height"
+                 [style.border-color]="'#ff4444'"
+                 [style.animation-delay.s]="spot.delay">
+                <span class="box-label">{{ spot.label || 'Detected' }}</span>
+                <div class="box-corner tl"></div>
+                <div class="box-corner tr"></div>
+                <div class="box-corner bl"></div>
+                <div class="box-corner br"></div>
+            </div>
+
+            <!-- AI Target Dot (Green) -->
+            <div class="target-dot"
+                 [style.left.%]="spot.left + (spot.width / 2)"
+                 [style.top.%]="spot.top + (spot.height / 2)"
+                 [style.animation-delay.s]="spot.delay">
+            </div>
+        } @else {
+            <!-- Original Heatmap Spot Style -->
+            <div class="heatmap-spot animate-pulse"
+                 [style.width.px]="spot.size"
+                 [style.height.px]="spot.size"
+                 [style.left.%]="spot.left"
+                 [style.top.%]="spot.top"
+                 [style.background]="spot.background"
+                 [style.animation-delay.s]="spot.delay">
+            </div>
+        }
+    }
+        
+    <!-- SVG Layer for connecting lines (Dashed Green) -->
+    <svg class="hud-connections" viewBox="0 0 100 100" preserveAspectRatio="none">
+        @for (spot of heatmapSpots(); track $index) {
+            @if (spot.width && spot.height && $index > 0) {
+                @let prev = heatmapSpots()[$index - 1];
+                @if (prev.width && prev.height) {
+                    <line [attr.x1]="prev.left + (prev.width / 2)"
+                          [attr.y1]="prev.top + (prev.height / 2)"
+                          [attr.x2]="spot.left + (spot.width / 2)"
+                          [attr.y2]="spot.top + (spot.height / 2)"
+                          class="hud-line" />
+                }
+            }
+        }
+    </svg>
+
+    <!-- Advanced Scanning HUD Overlay -->
+    <div class="scanner-hud" [class.active]="isScanning()">
+        <div class="hud-corners">
+            <div class="hud-corner tl"></div>
+            <div class="hud-corner tr"></div>
+            <div class="hud-corner bl"></div>
+            <div class="hud-corner br"></div>
+        </div>
+
+        <div class="hud-grid"></div>
+        <div class="hud-scanning-line"></div>
+        <div class="hud-data-readout">
+            <div class="readout-item">LAT: 45.523° N</div>
+            <div class="readout-item">LON: 122.676° W</div>
+            <div class="readout-item">ALT: 142m</div>
+            <div class="readout-item">INFRA: ACTIVE</div>
+        </div>
+
+        <div class="hud-crosshair">
+            <div class="crosshair-h"></div>
+            <div class="crosshair-v"></div>
+        </div>
+    </div>
+
+</div>

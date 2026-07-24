@@ -1,0 +1,65 @@
+<div class="scanner-container" id="scanner-container-view">
+  <div class="dropzone-container" id="dropzone-container">
+    <!-- Dropzone default state -->
+    @if (!previewImgSrc()) {
+    <app-dropzone (fileSelected)="onFileSelected($event)"></app-dropzone>
+    }
+
+    <!-- Uploaded Image & Scan Animation Layer -->
+    @if (previewImgSrc()) {
+      <div class="relative overflow-hidden rounded-xl border border-white/5">
+        <app-preview
+          [previewImgSrc]="previewImgSrc()"
+          [heatmapSpots]="heatmapSpots()"
+          [isScanning]="isScanning()"
+        ></app-preview>
+        
+        <!-- Technical readout overlays -->
+        <div class="absolute top-3 left-3 tech-label pointer-events-none">
+          <div class="indicator-dot" [class.active]="isScanning()"></div>
+          {{ isScanning() ? 'SCANNING_SEQUENCE' : 'TARGET_LOCKED' }}
+        </div>
+        
+        <div class="absolute bottom-3 left-3 flex flex-col gap-1 pointer-events-none opacity-60">
+          <div class="text-[8px] font-mono text-primary">SIG: 0x4f22a1</div>
+          <div class="text-[8px] font-mono text-primary">RES: 2440x1920</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Scan progress bar details -->
+  @if (isScanning()) {
+  <div class="scan-status-panel p-4 rounded-xl bg-white/[0.02] border border-white/5 mt-2">
+    <div class="flex items-center justify-between mb-3">
+      <span class="tech-label">Processing Signature</span>
+      <span class="tech-value">{{ scanProgress() }}%</span>
+    </div>
+    
+    <app-progress-bar
+      [scanStatusText]="scanStatusText()"
+      [scanProgress]="scanProgress()"
+    ></app-progress-bar>
+    
+    <div class="mt-3 flex gap-4">
+      <div class="flex flex-col">
+        <span class="text-[9px] text-zinc-500 uppercase font-bold">Neural Load</span>
+        <div class="h-1 w-16 bg-white/5 rounded-full mt-1 overflow-hidden">
+          <div class="h-full bg-primary/40" [style.width.%]="scanProgress() * 0.8"></div>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-[9px] text-zinc-500 uppercase font-bold">V-Buffer</span>
+        <div class="h-1 w-16 bg-white/5 rounded-full mt-1 overflow-hidden">
+          <div class="h-full bg-primary/40" [style.width.%]="scanProgress() * 0.6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <app-preset
+    [isScanning]="isScanning()"
+    (presetSelected)="triggerScanSimulation($event)"
+  ></app-preset>
+</div>

@@ -1,0 +1,898 @@
+[
+  {
+    "id": 0,
+    "disease_name": "Wheat Blast",
+    "scientific_name": "Magnaporthe oryzae pathotype Triticum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "wheat_blast",
+    "symptoms": "Bleaching of spikelets, silver-white heads in fields, gray mold-like growth under high humidity."
+  },
+  {
+    "id": 1,
+    "disease_name": "Fusarium Head Blight",
+    "scientific_name": "Fusarium graminearum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "fusarium_head_blight",
+    "symptoms": "Bleaching of individual spikelets or entire heads, orange or pinkish mass of fungal spores at base of glumes, shriveled chalky kernels."
+  },
+  {
+    "id": 2,
+    "disease_name": "Leaf Rust",
+    "scientific_name": "Puccinia triticina",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "leaf_rust",
+    "symptoms": "Small, round, scattered orange-red pustules appearing primarily on the upper leaf surface and leaf sheaths."
+  },
+  {
+    "id": 3,
+    "disease_name": "Stripe Rust",
+    "scientific_name": "Puccinia striiformis f. sp. tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "stripe_rust",
+    "symptoms": "Elongated, bright yellow-orange pustules arranged in linear, narrow rows or stripes parallel to the leaf veins."
+  },
+  {
+    "id": 4,
+    "disease_name": "Stem Rust",
+    "scientific_name": "Puccinia graminis f. sp. tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "stem_rust",
+    "symptoms": "Large, elongated, dark reddish-brown pustules on stems and leaf sheaths that tear the epidermis; matures into black lesions."
+  },
+  {
+    "id": 5,
+    "disease_name": "Powdery Mildew",
+    "scientific_name": "Blumeria graminis f. sp. tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "powdery_mildew",
+    "symptoms": "White to light gray, fluffy, cottony fungal colonies on the surfaces of lower leaves and stems, turning dull gray-brown with tiny black dots over time."
+  },
+  {
+    "id": 6,
+    "disease_name": "Septoria Tritici Blotch",
+    "scientific_name": "Zymoseptoria tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "septoria_tritici_blotch",
+    "symptoms": "Irregular, elongated, speckled tan-to-brown lesions on leaves, speckled with numerous tiny, prominent black fruiting bodies (pycnidia)."
+  },
+  {
+    "id": 7,
+    "disease_name": "Stagonospora Glume Blotch",
+    "scientific_name": "Parastagonospora nodorum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "stagonospora_glume_blotch",
+    "symptoms": "Dark purple-brown to grayish-brown lens-shaped streaks and blotches starting at the glume tips, along with lens-shaped lesions on leaves."
+  },
+  {
+    "id": 8,
+    "disease_name": "Tan Spot",
+    "scientific_name": "Pyrenophora tritici-repentis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "tan_spot",
+    "symptoms": "Oval, tan-colored spots or lesions on leaves, typically featuring a tiny dark brown center point and surrounded by a yellow, chlorotic halo."
+  },
+  {
+    "id": 9,
+    "disease_name": "Loose Smut",
+    "scientific_name": "Ustilago tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "loose_smut",
+    "symptoms": "Normal spikelet head structures completely replaced by a loose, dark, olive-black powdery mass of fungal spores, leaving only the bare central rachis stem behind."
+  },
+  {
+    "id": 10,
+    "disease_name": "Common Bunt",
+    "scientific_name": "Tilletia caries",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "common_bunt",
+    "symptoms": "Infected kernels are wider, gray-green to dull brown, and filled with a black, powdery spore mass that emits a foul, rotting-fish odor when crushed."
+  },
+  {
+    "id": 11,
+    "disease_name": "Karnal Bunt",
+    "scientific_name": "Tilletia indica",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "karnal_bunt",
+    "symptoms": "Partial blackening of individual kernels, typically starting at the embryo end and extending along the groove, exhibiting a mild fishy odor."
+  },
+  {
+    "id": 12,
+    "disease_name": "Ergot",
+    "scientific_name": "Claviceps purpurea",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "ergot",
+    "symptoms": "Hard, elongated, dark-purple to black curved horn-like fungal structures (sclerotia) that completely replace individual grains in the head."
+  },
+  {
+    "id": 13,
+    "disease_name": "Take-all",
+    "scientific_name": "Gaeumannomyces graminis var. tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "take_all",
+    "symptoms": "Premature ripening of the plant producing bleached, empty 'whiteheads', alongside severe blackening and rotting of the roots and lower crown stem tissue."
+  },
+  {
+    "id": 14,
+    "disease_name": "Sooty Molds",
+    "scientific_name": "Alternaria spp. and Cladosporium spp.",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "sooty_molds",
+    "symptoms": "Superficial dark green, gray, or jet-black powdery mold growing across the surfaces of mature, standing wheat heads, often following wet pre-harvest weather."
+  },
+  {
+    "id": 15,
+    "disease_name": "Black Chaff",
+    "scientific_name": "Xanthomonas translucens pv. undulosa",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "black_chaff",
+    "symptoms": "Dark purple-black linear stripes or blotches on the glumes and water-soaked, dark green to brown streaks on leaves, often producing amber-colored bacterial exudate droplets."
+  },
+  {
+    "id": 16,
+    "disease_name": "Bacterial Leaf Blight",
+    "scientific_name": "Pseudomonas syringae pv. syringae",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "bacterial_leaf_blight",
+    "symptoms": "Small, water-soaked spots on leaves that expand rapidly into large, irregular, grayish-green or light brown necrotic blighted lesions."
+  },
+  {
+    "id": 17,
+    "disease_name": "Basal Glume Rot",
+    "scientific_name": "Pseudomonas syringae pv. atrofaciens",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "basal_glume_rot",
+    "symptoms": "Dull brownish-black discoloration restricted to the base of the glumes, often visible on both the inner and outer surfaces of the spikelet shell."
+  },
+  {
+    "id": 18,
+    "disease_name": "Barley Yellow Dwarf",
+    "scientific_name": "Barley yellow dwarf virus (BYDV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "barley_yellow_dwarf",
+    "symptoms": "Striking yellowing or reddening/purpling of leaf tips progressing downward, accompanied by severe plant stunting and reduced head emergence."
+  },
+  {
+    "id": 19,
+    "disease_name": "Wheat Streak Mosaic",
+    "scientific_name": "Wheat streak mosaic virus (WSMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_streak_mosaic",
+    "symptoms": "Discontinuous, light-green to bright-yellow parallel streaks or dashes running along leaf veins, creating a mottled mosaic pattern."
+  },
+  {
+    "id": 20,
+    "disease_name": "Wheat Seed Gall",
+    "scientific_name": "Anguina tritici",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "wheat_seed_gall",
+    "symptoms": "Crinkled, twisted leaves in early growth stages; normal kernels are replaced by small, hard, dark brown-to-black cockle galls containing thousands of dormant larvae."
+  },
+  {
+    "id": 21,
+    "disease_name": "Root-Knot Nematode Disease",
+    "scientific_name": "Meloidogyne spp.",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "root_knot_nematode",
+    "symptoms": "Stunted, chlorotic plant growth above ground; root systems exhibit distinct swellings, knots, or small galls that inhibit water uptake."
+  },
+  {
+    "id": 22,
+    "disease_name": "Ascochyta Leaf Spot",
+    "scientific_name": "Ascochyta hordei",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "ascochyta_leaf_spot",
+    "symptoms": "Small, lens-shaped, white to pale-straw colored spots on leaf blades with a thin brown border, developing clusters of tiny dark brown fruiting bodies in the center."
+  },
+  {
+    "id": 23,
+    "disease_name": "Pink Root Rot",
+    "scientific_name": "Setophoma terrestris",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "pink_root_rot",
+    "symptoms": "Roots exhibit a distinct light pink to reddish-purple discoloration, followed by shriveling, dark brown rotting, and severe water stress symptoms in the leaves."
+  },
+  {
+    "id": 24,
+    "disease_name": "Bacterial Pink Ear",
+    "scientific_name": "Erwinia rhapontici",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "bacterial_pink_ear",
+    "symptoms": "A faint pink to reddish coloration appearing across the glumes and internal kernels of developing green heads, without any visible fungal mycelium or spores."
+  },
+  {
+    "id": 25,
+    "disease_name": "Sclerotinia Snow Mold",
+    "scientific_name": "Sclerotinia borealis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "sclerotinia_snow_mold",
+    "symptoms": "Fluffy, dull-white fungal mats covering dead, water-soaked leaves immediately following spring snowmelt, forming hard, flat, irregular black sclerotia on the crown."
+  },
+  {
+    "id": 26,
+    "disease_name": "Wheat American Striate Mosaic",
+    "scientific_name": "Wheat american striate mosaic virus (WASMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_american_striate_mosaic",
+    "symptoms": "Fine, closely spaced yellow-white striations or dashes running parallel along the leaf veins, causing severe plant stunting and twisting of newly emerged leaves."
+  },
+  {
+    "id": 27,
+    "disease_name": "Phoma Glume Spot",
+    "scientific_name": "Phoma macrostoma",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "phoma_glume_spot",
+    "symptoms": "Small, irregular dark purple-brown spots on the glumes that dry into gray-tan lesions speckled with submerged, microscopic black pycnidia."
+  },
+  {
+    "id": 28,
+    "disease_name": "Fusarium Seedling Blight",
+    "scientific_name": "Fusarium poae",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "fusarium_seedling_blight",
+    "symptoms": "Light brown, water-soaked rotting of the coleoptile and primary roots, causing small, twisted seedlings that die shortly before or after emerging from the soil."
+  },
+  {
+    "id": 29,
+    "disease_name": "Curvularia Leaf Blight",
+    "scientific_name": "Curvularia geniculata",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "curvularia_leaf_blight",
+    "symptoms": "Elongated, water-soaked brown streaks on leaf blades that turn dark brown to black, developing a velvety, dark fungal layer under humid conditions."
+  },
+  {
+    "id": 30,
+    "disease_name": "Bipolaris Seed Rot",
+    "scientific_name": "Bipolaris cynodontis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "bipolaris_seed_rot",
+    "symptoms": "Dark brown discolorations across the seed coat and embryo, causing poor germination rates and weak, stunted seedlings with dark lesions on their first leaves."
+  },
+  {
+    "id": 31,
+    "disease_name": "Dagger Nematode Damage",
+    "scientific_name": "Xiphinema americanum",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "dagger_nematode",
+    "symptoms": "Patches of stunted, pale yellow plants; root systems are reduced, dark, and show swollen, dark, stubby root tips missing vital fine root hairs."
+  },
+  {
+    "id": 32,
+    "disease_name": "Aspergillus Seed Decay",
+    "scientific_name": "Aspergillus niger",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "aspergillus_seed_decay",
+    "symptoms": "A powdery, soot-black mass of fungal spores coating the surface and cracks of harvested kernels kept in high-moisture, warm storage conditions."
+  },
+  {
+    "id": 33,
+    "disease_name": "Penicillium Seedling Blight",
+    "scientific_name": "Penicillium chrysogenum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "penicillium_seedling_blight",
+    "symptoms": "A dusty, blue-green fungal layer on planted seeds, causing embryonic death or weak seedlings with pale green, stunted, and decaying leaves."
+  },
+  {
+    "id": 34,
+    "disease_name": "Wheat Yellow Leaf Spot",
+    "scientific_name": "Pyrenophora tritici-repentis (yellow phase)",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "wheat_yellow_leaf_spot",
+    "symptoms": "Small, circular to oval yellow spots on young leaf blades that lack a dark necrotic center, slowly expanding into wide yellow bands."
+  },
+  {
+    "id": 35,
+    "disease_name": "Epicoccum Leaf Spot",
+    "scientific_name": "Epicoccum amaranthi",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "epicoccum_leaf_spot",
+    "symptoms": "Small, irregular reddish-brown spots scattered across aging flag leaves, developing into dry, gray-centered lesions during hot, dry weather periods."
+  },
+  {
+    "id": 36,
+    "disease_name": "Stubby-Root Nematode Damage",
+    "scientific_name": "Paratrichodorus spp.",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "stubby_root_nematode",
+    "symptoms": "Irregular field patches of stunted, chlorotic plants; root systems are heavily restricted, showing an abundance of short, blunt, stubby root branches."
+  },
+  {
+    "id": 37,
+    "disease_name": "Rhizoctonia Root Rot",
+    "scientific_name": "Rhizoctonia oryzae",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "rhizoctonia_root_rot",
+    "symptoms": "Brown, sunken, girdling lesions on young roots and coleoptiles, causing poorly filled patches in the field, leaf yellowing, and stunted development."
+  },
+  {
+    "id": 38,
+    "disease_name": "Pythium Seedling Blight",
+    "scientific_name": "Pythium ultimum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "pythium_seedling_blight",
+    "symptoms": "Water-soaked, slimy root disintegration in freshly germinated seeds; seedlings collapse right at the soil line or rot completely prior to emergence."
+  },
+  {
+    "id": 39,
+    "disease_name": "Bacterial Glume Rot",
+    "scientific_name": "Pseudomonas syringae pv. syringae",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "bacterial_glume_rot",
+    "symptoms": "Water-soaked lesions on the upper third of glumes that dry into dark brown-black vertical stripes, occasionally leaking tiny white droplets under humid conditions."
+  },
+  {
+    "id": 40,
+    "disease_name": "Cladosporium Leaf Spot",
+    "scientific_name": "Cladosporium macrocarpum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "cladosporium_leaf_spot",
+    "symptoms": "Small, dark olive-green spots with fuzzy, velvety textures spreading across aging lower leaves, leading to localized yellowing and early leaf crisping."
+  },
+  {
+    "id": 41,
+    "disease_name": "Wheat Mosaic",
+    "scientific_name": "Wheat mosaic virus (WMoV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_mosaic",
+    "symptoms": "Finely dashed green and bright yellow mosaic patterns appearing parallel to leaf veins, frequently followed by mild plant stunting and twisting of upper tips."
+  },
+  {
+    "id": 42,
+    "disease_name": "Fusarium Root Rot",
+    "scientific_name": "Fusarium avenaceum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "fusarium_root_rot",
+    "symptoms": "Reddish-brown to dark chocolate discoloration extending across the primary root lines, accompanied by poor tiller counts and small, bleached seed heads."
+  },
+  {
+    "id": 43,
+    "disease_name": "Stagonospora Stem Blight",
+    "scientific_name": "Stagonospora nodorum (stem phase)",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "stagonospora_stem_blight",
+    "symptoms": "Dark purple-brown lens-shaped spots around leaf nodes and lower stem segments, structurally weakening the straw and causing it to snap under high winds."
+  },
+  {
+    "id": 44,
+    "disease_name": "Phoma Root Rot",
+    "scientific_name": "Phoma sclerotioides",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "phoma_root_rot",
+    "symptoms": "Dull, dark gray-to-black rot covering the core crown area and primary roots, heavily speckled with microscopic black dots embedded directly into decayed skin tissue."
+  },
+  {
+    "id": 45,
+    "disease_name": "Bipolaris Crown Rot",
+    "scientific_name": "Bipolaris australis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "bipolaris_crown_rot",
+    "symptoms": "Dark charcoal-brown streaks creeping up the base of the main tillers, decaying the lower node centers and resulting in dead, silver-white heads at maturity."
+  },
+  {
+    "id": 46,
+    "disease_name": "Northern Root-Knot",
+    "scientific_name": "Meloidogyne hapla",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "northern_root_knot",
+    "symptoms": "Uneven field patches showing pale yellow leaves and poor growth; roots display tiny, branchy, localized swelling galls missing standard fine root hairs."
+  },
+  {
+    "id": 47,
+    "disease_name": "Alternaria Seed Decay",
+    "scientific_name": "Alternaria tenuis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "alternaria_seed_decay",
+    "symptoms": "Dull gray or dark brown powdery mold staining the edges and grooves of developing kernels during humid weather, lowering seedling vigor scores."
+  },
+  {
+    "id": 48,
+    "disease_name": "Nigrospora Leaf Blight",
+    "scientific_name": "Nigrospora sphaerica",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "nigrospora_leaf_blight",
+    "symptoms": "Irregular, dry, papery tan spots forming on upper foliage, coated with flat clusters of deep black, glassy spores visible under magnification."
+  },
+  {
+    "id": 49,
+    "disease_name": "Wheat Striate Mosaic",
+    "scientific_name": "Wheat striate mosaic virus (WSMV-Am)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_striate_mosaic",
+    "symptoms": "Fine, bright yellow-white continuous thread-like lines running cleanly along leaf edges, causing severe leaf curling and completely blind seed heads."
+  },
+  {
+    "id": 50,
+    "disease_name": "Epicoccum Seed Stain",
+    "scientific_name": "Epicoccum purpurascens",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "epicoccum_seed_stain",
+    "symptoms": "Reddish, orange, or wine-colored chalky stains appearing across outer kernel layers right at harvest, often overlapping with black point conditions."
+  },
+  {
+    "id": 51,
+    "disease_name": "Spiral Nematode Damage",
+    "scientific_name": "Helicotylenchus spp.",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "spiral_nematode",
+    "symptoms": "Slow, stunted growth across large field areas; root networks display numerous tiny, distinct brown lesions, blunt tips, and general root hair loss."
+  },
+  {
+    "id": 52,
+    "disease_name": "Sclerotium Stem Rot",
+    "scientific_name": "Sclerotium rolfsii",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "sclerotium_stem_rot",
+    "symptoms": "A thick, white, fan-like fungal mat covering the stem base at the soil line, accompanied by small, round, light-brown survival structures resembling mustard seeds, causing sudden wilting."
+  },
+  {
+    "id": 53,
+    "disease_name": "Phoma Leaf Spot",
+    "scientific_name": "Phoma sorghina",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "phoma_leaf_spot",
+    "symptoms": "Small, regular, dark brown oval spots on leaves that gradually develop lighter, straw-colored centers containing tiny, dark, embedded pimple-like structures."
+  },
+  {
+    "id": 54,
+    "disease_name": "Bipolaris Leaf Blight",
+    "scientific_name": "Bipolaris spicifera",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "bipolaris_leaf_blight",
+    "symptoms": "Elongated, water-soaked, dark brown lesions on seedlings and lower foliage that coalesce into large, dead areas of leaf tissue, often covered in dark, olive-black velvety mold."
+  },
+  {
+    "id": 55,
+    "disease_name": "Crater Rot",
+    "scientific_name": "Rhizoctonia solani AG-4",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "crater_rot",
+    "symptoms": "Deep, crater-like, sunken brown pits on the lower leaf sheaths and main crown nodes that physically disrupt the flow of plant nutrients and lead to lodging."
+  },
+  {
+    "id": 56,
+    "disease_name": "Curvularia Leaf Spot",
+    "scientific_name": "Curvularia lunata",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "curvularia_leaf_spot",
+    "symptoms": "Oval or lens-shaped lesions on older leaves featuring distinct dark brown margins, tan-colored centers, and prominent light-green chlorotic borders or halos."
+  },
+  {
+    "id": 57,
+    "disease_name": "Nigrospora Head Blight",
+    "scientific_name": "Nigrospora oryzae",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "nigrospora_head_blight",
+    "symptoms": "A powdery, jet-black accumulation of microscopic fungal spores clustering thickly along the central stem rachis and inner glume bases of prematurely bleached seed heads."
+  },
+  {
+    "id": 58,
+    "disease_name": "Acremonium Wilt",
+    "scientific_name": "Acremonium strictum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "acremonium_wilt",
+    "symptoms": "A characteristic yellow-to-brown discoloration starting on one side of the leaf blade, progressing down the vein line to induce premature leaf rolling and rapid plant death."
+  },
+  {
+    "id": 59,
+    "disease_name": "Bacterial Leaf Spot",
+    "scientific_name": "Pseudomonas cichorii",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "bacterial_leaf_spot",
+    "symptoms": "Dark brown to shiny black, water-soaked spots with highly irregular edges forming on lower leaves under wet conditions, drying out into a thin, brittle paper-like sheet."
+  },
+  {
+    "id": 60,
+    "disease_name": "Pink Kernel Rot",
+    "scientific_name": "Trichothecium roseum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "pink_kernel_rot",
+    "symptoms": "A light pink, powdery, or dusty fungal layer coating the surfaces of individual wheat kernels within mature heads that have sustained heavy physical insect damage."
+  },
+  {
+    "id": 61,
+    "disease_name": "Wheat Yellow Stripe",
+    "scientific_name": "Wheat yellow stripe virus (WYSV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_yellow_stripe",
+    "symptoms": "Fine, bright yellow, continuous parallel lines running the full length of the leaf surface, causing noticeable plant dwarfing and narrow leaf blade deformity."
+  },
+  {
+    "id": 62,
+    "disease_name": "Cereal Yellow Dwarf",
+    "scientific_name": "Cereal yellow dwarf virus (CYDV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "cereal_yellow_dwarf",
+    "symptoms": "Intense, vivid yellowing of leaf tips that slowly spreads downward to the leaf base, accompanied by a stiff, upright, bunched growth habit and reduced head size."
+  },
+  {
+    "id": 63,
+    "disease_name": "Southern Root-Knot",
+    "scientific_name": "Meloidogyne incognita",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "southern_root_knot",
+    "symptoms": "Patches of stunted, pale yellow plants displaying severe nutrient deficiency; roots are short, abnormally branched, and covered in small, hard, rounded swelling knots."
+  },
+  {
+    "id": 64,
+    "disease_name": "False Ergot",
+    "scientific_name": "Ustilaginoidea virens",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "false_ergot",
+    "symptoms": "Individual grains inside the head are transformed into large, velvety, orange-yellow to dark green powdery spore balls that erupt through the glumes."
+  },
+  {
+    "id": 65,
+    "disease_name": "Dilophospora Seed Gall",
+    "scientific_name": "Dilophospora alopecuri",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "dilophospora_seed_gall",
+    "symptoms": "A black, crusty layer of fungal tissue surrounding and binding the leaf sheath tightly to the emerging head, completely arresting head expansion and grain development."
+  },
+  {
+    "id": 66,
+    "disease_name": "Stunt Nematode Disease",
+    "scientific_name": "Tylenchorhynchus claytoni",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "stunt_nematode",
+    "symptoms": "Thin, uniform field patches of sickly, yellowing plants with a severely stunted root architecture consisting of dark, shriveled root tips missing all root hairs."
+  },
+  {
+    "id": 67,
+    "disease_name": "Black Point",
+    "scientific_name": "Alternaria alternata",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "black_point",
+    "symptoms": "Dark brown to black discoloration of the embryo end of the wheat kernel, spreading along the groove without shriveling the grain seed coat."
+  },
+  {
+    "id": 68,
+    "disease_name": "Storage Mold",
+    "scientific_name": "Aspergillus glaucus",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "storage_mold",
+    "symptoms": "Dull yellow-green to dark blue-green powdery fungal patches forming across grain piles in bins, accompanied by musty odors and localized heating of grain."
+  },
+  {
+    "id": 69,
+    "disease_name": "Penicillium Rot",
+    "scientific_name": "Penicillium spp.",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "penicillium_rot",
+    "symptoms": "Bright blue-green, velvet-like fungal colonies forming over damp or cracked grain coatings, rapidly destroying seed embryo viability and germination rates."
+  },
+  {
+    "id": 70,
+    "disease_name": "Rhizoctonia Damping-Off",
+    "scientific_name": "Rhizoctonia solani AG-8",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "rhizoctonia_damping_off",
+    "symptoms": "Pre-emergent decay of seeds or collapsing of young seedlings at the soil line, characterized by dark brown girdling lesions on tender root stems."
+  },
+  {
+    "id": 71,
+    "disease_name": "Foot Rot",
+    "scientific_name": "Pseudocercosporella herpotrichoides",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "foot_rot",
+    "symptoms": "Eye-shaped structural lesions on the lowest leaf sheath near the soil surface, featuring dark borders and pale centers that cause fragile stems to break easily."
+  },
+  {
+    "id": 72,
+    "disease_name": "Bacterial Leaf Streak",
+    "scientific_name": "Xanthomonas campestris pv. translucens",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "bacterial_leaf_streak",
+    "symptoms": "Elongated, water-soaked narrow stripes on leaves that turn yellowish-brown and translucent, forming brittle amber beads of dried bacterial ooze."
+  },
+  {
+    "id": 73,
+    "disease_name": "Pink Ribbon Disease",
+    "scientific_name": "Microdochium nivalis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "pink_ribbon_disease",
+    "symptoms": "Narrow, pinkish-white lines of webbed fungal growth running vertically up leaf sheets during extended wet spring periods, causing leaf tips to wilt."
+  },
+  {
+    "id": 74,
+    "disease_name": "Root Lesion Nematode Disease",
+    "scientific_name": "Pratylenchus penetrans",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "root_lesion_nematode",
+    "symptoms": "Stunted, thin, pale green plant development across field rows, with root systems showing microscopic brown scratches and dark necrotic lesion marks."
+  },
+  {
+    "id": 75,
+    "disease_name": "Wheat Dwarf",
+    "scientific_name": "Wheat dwarf virus (WDV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_dwarf",
+    "symptoms": "Extreme, uniform plant stunting, excessive weak tillering, and severe gold-yellow or red coloration of older leaf tips; transmitted by leafhoppers."
+  },
+  {
+    "id": 76,
+    "disease_name": "High Plains Disease",
+    "scientific_name": "High plains wheat mosaic virus (HPWMoV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "high_plains_disease",
+    "symptoms": "Severe yellow and light green mosaic mottling on leaves, accompanied by intense brown necrotic tearing of leaf tissue and stunted head development."
+  },
+  {
+    "id": 77,
+    "disease_name": "Barley Stripe Mosaic",
+    "scientific_name": "Barley stripe mosaic virus (BSMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "barley_stripe_mosaic",
+    "symptoms": "Discontinuous white, yellow, or light brown stripes forming a mosaic pattern on leaf surfaces, sometimes causing crinkling or severe splitting of leaf margins."
+  },
+  {
+    "id": 78,
+    "disease_name": "Stagonospora Leaf Blotch",
+    "scientific_name": "Stagonospora avenae f. sp. triticea",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "stagonospora_leaf_blotch",
+    "symptoms": "Lens-shaped brown lesions on leaves with dark borders and clear yellowish halos, featuring small, scattered, golden-brown embedded fruiting structures."
+  },
+  {
+    "id": 79,
+    "disease_name": "Cladosporium Rot",
+    "scientific_name": "Cladosporium herbarum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "cladosporium_rot",
+    "symptoms": "Olive-green to black velvet-like fuzzy mold layers growing across weathered, mature heads, often covering glumes without directly wrinkling internal grains."
+  },
+  {
+    "id": 80,
+    "disease_name": "Epicoccum Blight",
+    "scientific_name": "Epicoccum nigrum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "epicoccum_blight",
+    "symptoms": "Small orange, reddish-brown, or yellow speckles forming on aging leaves and glumes, which mature into dense, black powdery spots under humid weather."
+  },
+  {
+    "id": 81,
+    "disease_name": "Sclerotinia Crown Rot",
+    "scientific_name": "Sclerotinia sclerotiorum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "sclerotinia_crown_rot",
+    "symptoms": "Water-soaked rot at the base of the stem, producing dense cotton-white fungal mats that develop hard, charcoal-black survival bodies inside the straw center."
+  },
+  {
+    "id": 82,
+    "disease_name": "Anthracnose",
+    "scientific_name": "Colletotrichum graminicola",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "anthracnose",
+    "symptoms": "Elongated, bleach-colored lesions on leaves and sheaths containing tiny black hair-like structures (setae); premature ripening and washing out of stem brightness."
+  },
+  {
+    "id": 83,
+    "disease_name": "Alternaria Leaf Blight",
+    "scientific_name": "Alternaria triticina",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "alternaria_leaf_blight",
+    "symptoms": "Small, oval, water-soaked brown spots on lower leaves that expand into large irregular necrotic lesions with concentric rings and dark margins."
+  },
+  {
+    "id": 84,
+    "disease_name": "Claviceps Head Blight",
+    "scientific_name": "Claviceps purpurea",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "claviceps_head_blight",
+    "symptoms": "Droplets of sticky, amber-colored honeydew liquid exuding from infected spikelets during flowering, prior to the formation of dark purplish ergot sclerotia spurs."
+  },
+  {
+    "id": 85,
+    "disease_name": "Bunt of Wheat (Dwarf)",
+    "scientific_name": "Tilletia controversa",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "dwarf_bunt",
+    "symptoms": "Extreme stunting of the plant (often one-half to one-fourth normal height), excessive tillering, and replacement of kernels with rounded smut balls containing dark, fishy-smelling spores."
+  },
+  {
+    "id": 86,
+    "disease_name": "Glume Blotch (Septoria)",
+    "scientific_name": "Septoria nodorum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "glume_blotch",
+    "symptoms": "Dark brown to purple-brown spots appearing first on glumes, later developing grayish centers covered with tiny, embedded black fruiting bodies (pycnidia)."
+  },
+  {
+    "id": 87,
+    "disease_name": "Browning Root Rot",
+    "scientific_name": "Pythium arrhenomanes",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "browning_root_rot",
+    "symptoms": "Rapid yellowing and dying of lower leaves in large field patches during tillering; severe brown discolored rot on primary and secondary root tips."
+  },
+  {
+    "id": 88,
+    "disease_name": "Bacterial Streak (Leaf)",
+    "scientific_name": "Xanthomonas translucens",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "bacterial_streak",
+    "symptoms": "Linear, light-green to yellow translucent streaks on leaves that become necrotic and brown; dried yellow flakes or beads of bacterial ooze on the leaf surface."
+  },
+  {
+    "id": 89,
+    "disease_name": "Pink Snow Mold",
+    "scientific_name": "Microdochium majus",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "pink_snow_mold",
+    "symptoms": "White-pink, crusty or slimy fungal mycelium mats covering dead, collapsed leaves right after winter snow melts; bleached crowns and root decay."
+  },
+  {
+    "id": 90,
+    "disease_name": "Twist Disease",
+    "scientific_name": "Dilophospora alopecuri",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "twist_disease",
+    "symptoms": "Severe twisting, curling, and distortion of the upper leaves and emerging seed heads, which are bound together by a black, crusty mass of fungal spores."
+  },
+  {
+    "id": 91,
+    "disease_name": "Scab (Head Blight)",
+    "scientific_name": "Fusarium culmorum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "head_scab",
+    "symptoms": "Premature bleaching of spikelets within the head, pink-to-orange spore masses at the base of glumes, and dark purplish-black perithecia forming on mature wheat heads."
+  },
+  {
+    "id": 92,
+    "disease_name": "Agropyron Mosaic",
+    "scientific_name": "Agropyron mosaic virus (AgMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "agropyron_mosaic",
+    "symptoms": "Mild green to light yellow mosaic patterns, streaks, and dashes on leaf blades; slight reduction in plant vigor and overall seed count."
+  },
+  {
+    "id": 93,
+    "disease_name": "Wheat Yellow Mosaic",
+    "scientific_name": "Wheat yellow mosaic virus (WYMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_yellow_mosaic",
+    "symptoms": "Bright yellow mosaic patches on leaves, often with necrotic brown tips; severe plant stunting and localized patch death across wet field zones."
+  },
+  {
+    "id": 94,
+    "disease_name": "False Loose Smut",
+    "scientific_name": "Ustilago nigra",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "false_loose_smut",
+    "symptoms": "Dark brown to black powdery spore masses replacing grain inside the spikelets; differs from loose smut by retaining a fragile covering membrane until maturity."
+  },
+  {
+    "id": 95,
+    "disease_name": "Cereal Cyst Nematode Disease",
+    "scientific_name": "Heterodera avenae",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "cereal_cyst_nematode",
+    "symptoms": "Stunted, pale-yellow patches of plants; root systems are short, excessively branched, and show a distinct 'bushy knots' appearance with tiny white cysts."
+  },
+  {
+    "id": 96,
+    "disease_name": "Stem Nematode Disease",
+    "scientific_name": "Ditylenchus dipsaci",
+    "causative_agent": "Nematode",
+    "yolo_class_alignment": "stem_nematode",
+    "symptoms": "Swollen, twisted, distorted stems and leaf bases; shortened internodes giving plants a bunched 'dwarf-like' appearance; tissue becomes soft and rot-prone."
+  },
+  {
+    "id": 97,
+    "disease_name": "Common Root Rot",
+    "scientific_name": "Bipolaris sorokiniana",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "common_root_rot",
+    "symptoms": "Dark brown to black necrotic lesions on the subcrown internode, crown, and roots; stunting, reduced tillering, and premature bleaching of individual tillers."
+  },
+  {
+    "id": 98,
+    "disease_name": "Fusarium Crown Rot",
+    "scientific_name": "Fusarium pseudograminearum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "fusarium_crown_rot",
+    "symptoms": "Chocolate-brown discoloration at the lower stem bases and leaf sheaths; pinkish-white fungal growth inside the stem or nodes under moist conditions; formation of whiteheads."
+  },
+  {
+    "id": 99,
+    "disease_name": "Sharp Eyespot",
+    "scientific_name": "Rhizoctonia cerealis",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "sharp_eyespot",
+    "symptoms": "Lens-shaped lesions on lower leaf sheaths with sharply defined dark brown margins and pale straw-colored centers; weakens stems leading to lodging."
+  },
+  {
+    "id": 100,
+    "disease_name": "Cephalosporium Stripe",
+    "scientific_name": "Cephalosporium gramineum",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "cephalosporium_stripe",
+    "symptoms": "Distinct, continuous, bright yellow stripes running the full length of the leaf blade, with dark brown vascular strands visible within the stripes."
+  },
+  {
+    "id": 101,
+    "disease_name": "Snow Mold",
+    "scientific_name": "Microdochium nivale",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "snow_mold",
+    "symptoms": "Slimy, water-soaked leaves covered in a web-like white to pinkish fungal mycelium appearing immediately after winter snow melt, causing leaf death."
+  },
+  {
+    "id": 102,
+    "disease_name": "Halo Blight",
+    "scientific_name": "Pseudomonas coronafaciens",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "halo_blight",
+    "symptoms": "Small, oval, water-soaked spots on leaves that rapidly turn brown and become surrounded by a prominent, wide, pale-yellow to green chlorotic halo."
+  },
+  {
+    "id": 103,
+    "disease_name": "Wheat Soil-Borne Mosaic",
+    "scientific_name": "Wheat soil-borne mosaic virus (WSBMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_soil_borne_mosaic",
+    "symptoms": "Light green to yellow mosaic mottling and bright yellow flecking on young leaves; varying degrees of plant stunting occurring in distinct low-lying field patches."
+  },
+  {
+    "id": 104,
+    "disease_name": "Wheat Spindle Streak Mosaic",
+    "scientific_name": "Wheat spindle streak mosaic virus (WSSMV)",
+    "causative_agent": "Virus",
+    "yolo_class_alignment": "wheat_spindle_streak_mosaic",
+    "symptoms": "Yellowish-green spindle-shaped streaks or dashes oriented parallel to the leaf veins; progresses to brown necrotic spots as older leaf tissue dies back."
+  },
+  {
+    "id": 105,
+    "disease_name": "Yellow Ear Rot",
+    "scientific_name": "Rathayibacter tritici",
+    "causative_agent": "Bacterium",
+    "yolo_class_alignment": "yellow_ear_rot",
+    "symptoms": "Bright yellow, sticky, slimy bacterial slime or scum exuding across the emerging spikelet heads, twisting the heads and preventing grain formation; linked with nematode vectors."
+  },
+  {
+    "id": 106,
+    "disease_name": "Pythium Root Rot",
+    "scientific_name": "Pythium spp.",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "pythium_root_rot",
+    "symptoms": "General damping-off of seedlings; root systems exhibit a soft, water-soaked, yellowish-brown rot with complete loss of fine feeder root hairs."
+  },
+  {
+    "id": 107,
+    "disease_name": "Downy Mildew",
+    "scientific_name": "Sclerophthora macrospora",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "downy_mildew",
+    "symptoms": "Thickened, twisted, distorted, yellowing leaf structures; abnormal distortion of the seed head structure ('crazy top') where glumes morph into leaf-like extensions."
+  },
+  {
+    "id": 108,
+    "disease_name": "Rhizoctonia Bare Patch",
+    "scientific_name": "Rhizoctonia solani",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "rhizoctonia_bare_patch",
+    "symptoms": "Distinct, circular patches of stunted, purple-tinted plants in the field; root systems within the patch are heavily pruned with brown, pointed 'needle-point' tips."
+  },
+  {
+    "id": 109,
+    "disease_name": "Eyespot (Strawbreaker)",
+    "scientific_name": "Oculimacula yallundae",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "eyespot_strawbreaker",
+    "symptoms": "Eye-shaped lesions on the lower stem nodes near the soil line with a dark brown border and straw-colored center; central black dot may appear; causes lodging."
+  },
+  {
+    "id": 110,
+    "disease_name": "Ascochyta Leaf Blight",
+    "scientific_name": "Ascochyta tritici",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "ascochyta_leaf_blight",
+    "symptoms": "Large, irregular, pale gray to white bleached spots on leaves starting at the tip, filled with tiny submerged brown-black fruiting specs."
+  },
+  {
+    "id": 111,
+    "disease_name": "Flag Smut",
+    "scientific_name": "Urocystis agropyri",
+    "causative_agent": "Fungus",
+    "yolo_class_alignment": "flag_smut",
+    "symptoms": "Long, narrow gray-black lines or blisters running parallel inside the leaf tissue; blisters rupture to expose an abundant dusty black mass of spores; leaves twist."
+  }
+]

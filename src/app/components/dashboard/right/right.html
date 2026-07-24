@@ -1,0 +1,21 @@
+<app-glass-card extraClass="right-card" id="wizard-report-card">
+    <!-- Wizard questionnaire -->
+    @if (!currentScanResult()) {
+    <app-symptom-wizard (diagnosisTriggered)="onWizardDiagnosis($event)">
+    </app-symptom-wizard>
+    }
+
+    <!-- Scan/Diagnosis Report (Visible when scan matches) -->
+    @if (currentScanResult()) {
+    <app-report
+      [currentScanResult]="currentScanResult()"
+      [scanConfidence]="scanConfidence()"
+      [chartColor]="chartColor()"
+      (exportPDF)="exportPDF.emit()"
+      (transferScanToLog)="transferScanToLog.emit()"
+      (transferScanToPlanner)="transferScanToPlanner.emit()"
+      (openDossier)="openDossier.emit($event)"
+      (resetScanner)="resetScanner.emit()"
+    ></app-report>
+    }
+</app-glass-card>

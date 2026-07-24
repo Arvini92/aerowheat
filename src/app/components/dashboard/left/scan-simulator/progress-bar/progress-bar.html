@@ -1,0 +1,8 @@
+  <div class="scanning-status" id="scanning-status-wrapper">
+    <div class="progress-track" id="progress-track-bg">
+      <div class="progress-bar" [style.width.%]="scanProgress()" id="active-progress-bar"></div>
+    </div>
+    <div class="status-meta mt-2">
+      <span class="status-msg text-ellipsis font-mono text-[9px] uppercase tracking-wider text-primary">{{ scanStatusText() }}</span>
+    </div>
+  </div>

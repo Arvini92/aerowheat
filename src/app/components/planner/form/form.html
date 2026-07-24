@@ -1,0 +1,71 @@
+<app-glass-card extraClass="planner-form-card" id="planner-form-card">
+    <div class="card-header" id="planner-form-header">
+        <h3>IPM Treatment Planner</h3>
+    </div>
+
+    <form class="planner-form" [formGroup]="formGroup" (submit)="onSubmit($event)" id="planner-form-el">
+        <!-- Disease selector — full width -->
+        <div class="form-group" id="disease-select-group">
+            <label for="planner-disease">Select Identified Pathology</label>
+            <app-select
+                id="planner-disease"
+                formControlName="diseaseId"
+                placeholder="-- Select Crop Disease --"
+                [options]="selectOptions()"
+                [error]="getErrorMessage('diseaseId')"
+                (selectionChange)="onDiseaseChange()">
+            </app-select>
+        </div>
+
+        <!-- Field + Severity row — stacked labels, proper spacing -->
+        <div class="form-row" id="form-row-details">
+            <div class="form-group col" id="field-input-group">
+                <label for="planner-field">Field Identifier / Zone</label>
+                <app-input
+                    id="planner-field"
+                    formControlName="fieldId"
+                    placeholder="e.g. Zone B-14"
+                    [error]="getErrorMessage('fieldId')"
+                />
+            </div>
+            <div class="form-group col" id="severity-select-group">
+                <label for="planner-severity">Infestation Severity</label>
+                <app-select
+                    id="planner-severity"
+                    formControlName="severity"
+                    placeholder="Select severity"
+                    [options]="severityOptions()"
+                    [error]="getErrorMessage('severity')"
+                    [showPlaceholder]="false">
+                </app-select>
+            </div>
+        </div>
+
+        <!-- Variety -->
+        <div class="form-group" id="variety-input-group">
+            <label for="planner-variety">Wheat Variety / Cultivar</label>
+            <app-input
+                id="planner-variety"
+                formControlName="variety"
+                placeholder="e.g. Hard Red Winter Wheat"
+                [error]="getErrorMessage('variety')"
+            />
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group" id="notes-textarea-group">
+            <app-textarea
+                id="planner-notes"
+                formControlName="notes"
+                label="Agronomic Field Notes (Optional)"
+                [rows]="4"
+                placeholder="Mention weather conditions, soil moisture, past rotations..."
+                [error]="getErrorMessage('notes')">
+            </app-textarea>
+        </div>
+
+        <app-button variant="primary" size="full-width" type="submit" id="planner-submit-btn">
+            Generate Treatment Schedule
+        </app-button>
+    </form>
+</app-glass-card>

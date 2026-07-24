@@ -1,0 +1,18 @@
+<div class="explorer-container">
+    <app-anatomy
+      [selectedSection]="selectedSection()"
+      (selectSection)="selectSection($event)"
+    ></app-anatomy>
+    <!-- Right: Section details column -->
+    <div class="explorer-details-column" id="explorer-details-column">
+        <app-symptoms
+          [selectedSectionTitle]="selectedSectionTitle()"
+          [selectedSectionDesc]="selectedSectionDesc()"
+          [currentSymptoms]="currentSymptoms()"
+        ></app-symptoms>
+        <app-pathogens
+          [currentPathogens]="currentPathogens()"
+          (openDossier)="openDossier($event)"
+        ></app-pathogens>
+    </div>
+</div>

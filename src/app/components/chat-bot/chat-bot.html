@@ -1,0 +1,257 @@
+<div class="chat-bot-container" [class.open]="isOpen()">
+  <!-- Floating toggle button -->
+  <button 
+    class="chat-toggle-btn" 
+    (click)="toggleChat()"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="isOpen() ? 'Close chat assistant' : 'Open chat assistant'"
+    type="button"
+  >
+    <svg class="chat-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+    <svg class="close-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+    @if (!isOpen()) {
+      <span class="notification-badge" aria-label="New messages">1</span>
+    }
+  </button>
+
+  <!-- Chat panel -->
+  @if (isOpen()) {
+    <div class="chat-panel" [class.fullscreen]="isFullscreen()" role="dialog" aria-label="AeroWheat Chat Assistant" aria-modal="true">
+      <!-- Header -->
+      <div class="chat-header">
+        <div class="chat-header-content">
+          <div class="bot-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              <circle cx="12" cy="12" r="10" stroke-opacity="0.1" />
+              <path d="M12 2c4 4 6 8 6 12a6 6 0 0 1-12 0c0-4 2-8 6-12z" stroke="var(--primary)" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="chat-title">
+            <h3>AeroWheat Assistant</h3>
+            <span class="status-indicator">
+              <span class="status-dot" [class.loading]="aiLoading() || isGenerating()" aria-hidden="true"></span>
+              <span>
+                @if (aiLoading()) {
+                  {{ aiStatus() }} ({{ aiProgress() }}%@if (aiBytes()) { · {{ aiBytes() }}})
+                } @else if (isGenerating()) {
+                  Thinking...
+                } @else {
+                  System Ready
+                }
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button 
+            class="action-btn rag-toggle-btn" 
+            [class.active]="isRagEnabled()" 
+            (click)="toggleRag()" 
+            [title]="isRagEnabled() ? 'RAG Vector Search Active (Click to disable)' : 'RAG Disabled (Click to enable)'"
+            aria-label="Toggle RAG Vector Search"
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span class="rag-badge">{{ isRagEnabled() ? 'RAG' : 'OFF' }}</span>
+          </button>
+          <button 
+            class="action-btn fullscreen-btn" 
+            (click)="toggleFullscreen()" 
+            [title]="isFullscreen() ? 'Exit fullscreen' : 'Enter fullscreen'"
+            aria-label="Toggle fullscreen mode"
+            type="button"
+          >
+            @if (isFullscreen()) {
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+              </svg>
+            } @else {
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+              </svg>
+            }
+          </button>
+          <button class="action-btn" (click)="clearChat()" title="Clear history" aria-label="Clear chat history" type="button">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+          <button class="close-btn" (click)="closeChat()" aria-label="Close chat" type="button">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Messages List with Auto Scroll -->
+      <div class="messages-container" #scrollContainer>
+        @for (msg of messages(); track msg.id) {
+          <div class="message-row" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+            <div class="message-bubble">
+              <div class="message-content" [innerHTML]="formatMessageText(msg.text)"></div>
+              
+              <!-- RAG Context Sources -->
+              @if (msg.role === 'assistant' && msg.sources && msg.sources.length > 0) {
+                <div class="sources-container">
+                  <span class="sources-title">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    Retrieved Knowledge Sources:
+                  </span>
+                  <div class="source-pills">
+                    @for (src of msg.sources; track src.metadata.id) {
+                      <button 
+                        class="source-pill" 
+                        (click)="openSourceDetails(src.metadata)" 
+                        type="button" 
+                        title="Click to view disease details"
+                      >
+                        <span class="source-name">{{ src.metadata.disease_name }}</span>
+                        <span class="source-score">{{ formatScore(src.score) }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+
+              <div class="message-footer">
+                <span class="message-time">{{ formatTime(msg.timestamp) }}</span>
+                @if (msg.role === 'assistant' && msg.text) {
+                  <div class="message-actions">
+                    <button 
+                      class="speech-btn" 
+                      [class.speaking]="speakingMessageId() === msg.id" 
+                      (click)="speakMessage(msg.id, msg.text)" 
+                      [title]="speakingMessageId() === msg.id ? 'Stop audio' : 'Listen to message'" 
+                      type="button"
+                    >
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                      </svg>
+                    </button>
+                    <button class="copy-btn" (click)="copyToClipboard(msg.text)" title="Copy to clipboard" aria-label="Copy message text" type="button">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Typing indicator -->
+        @if (isWaitingForFirstChunk()) {
+          <div class="message-row assistant">
+            <div class="message-bubble typing-bubble">
+              <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      @if (suggestions().length > 0 && !isGenerating()) {
+        <div class="suggestions-bar">
+          @for (sug of suggestions(); track sug.label) {
+            <button 
+              class="suggestion-chip" 
+              (click)="sendSuggestion(sug.prompt)" 
+              [title]="sug.prompt"
+              type="button"
+            >
+              <span class="chip-icon">{{ getChipIcon(sug.label) }}</span>
+              <span class="chip-text">{{ getChipText(sug.label) }}</span>
+              <svg class="chip-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Composer Input -->
+      <div class="chat-composer">
+        <div class="input-wrapper">
+          <textarea
+            #inputField
+            class="chat-input"
+            [value]="currentInput()"
+            (input)="onInputChange($event)"
+            (keydown)="onKeyDown($event)"
+            placeholder="Ask about wheat diseases, treatments, or scouting..."
+            rows="1"
+            [disabled]="isGenerating()"
+            [attr.maxlength]="1000"
+            aria-label="Type your message"
+          ></textarea>
+          @if (inputCharCount() > 0) {
+            <span class="char-count" [class.near-limit]="inputCharCount() > 900">{{ inputCharCount() }}/1000</span>
+          }
+        </div>
+        <button 
+          class="send-btn" 
+          (click)="sendMessage()" 
+          [disabled]="!currentInput().trim() || isGenerating()"
+          type="button"
+          aria-label="Send message"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Disease Source Detail Modal -->
+      @if (selectedSource(); as src) {
+        <div class="source-modal-overlay" (click)="closeSourceDetails()">
+          <div class="source-modal-card" (click)="$event.stopPropagation()">
+            <div class="source-modal-header">
+              <div>
+                <h4>{{ src.disease_name }}</h4>
+                <span class="scientific-name"><em>{{ src.scientific_name }}</em></span>
+              </div>
+              <button class="close-modal-btn" (click)="closeSourceDetails()" type="button">&times;</button>
+            </div>
+            <div class="source-modal-body">
+              <div class="meta-item">
+                <strong>Causative Agent:</strong> {{ src.causative_agent }}
+              </div>
+              <div class="meta-item">
+                <strong>Pathology Symptoms:</strong>
+                <p>{{ src.symptoms }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Backdrop overlay for mobile -->
+  @if (isOpen()) {
+    <div class="chat-backdrop" (click)="closeChat()" aria-hidden="true"></div>
+  }
+</div>

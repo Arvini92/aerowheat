@@ -1,0 +1,15 @@
+<div class="planner-layout" id="planner-layout-root">
+    <app-form
+      [(diseaseId)]="diseaseId"
+      [(fieldId)]="fieldId"
+      [(severity)]="severity"
+      [(variety)]="variety"
+      [(notes)]="notes"
+      [diseases]="diseases"
+      (diseaseChange)="onDiseaseChange()"
+      (formSubmit)="onSubmit($event)"
+    ></app-form>
+    <app-plan
+      [activePlan]="activePlan()"
+    ></app-plan>
+</div>

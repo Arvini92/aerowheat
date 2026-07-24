@@ -1,0 +1,43 @@
+<div class="library-search-bar glass-card" id="search-bar">
+    <div class="search-input-wrapper" id="search-input-wrapper">
+        <app-input
+            id="library-search"
+            type="search"
+            placeholder="Search disease name, pathogen, symptoms..."
+            [iconLeft]="true"
+            [(ngModel)]="librarySearchText"
+            name="librarySearch"
+            ariaLabel="Search disease library"
+        >
+            <app-icon slot="icon-left" size="sm" class="text-zinc-400">search</app-icon>
+        </app-input>
+    </div>
+
+    <div class="filter-group" id="anatomy-filter-group">
+        <app-select 
+            id="anatomy-select"
+            [ngValue]="libraryFilterAnatomy"
+            (valueChange)="onAnatomyChange($event)"
+            placeholder="All Anatomy Sections"
+            [options]="anatomyOptions()"
+            [showPlaceholder]="false">
+        </app-select>
+    </div>
+
+    <div class="filter-group" id="type-filter-group">
+        <app-select 
+            id="type-select"
+            [ngValue]="libraryFilterType"
+            (valueChange)="onTypeChange($event)"
+            placeholder="All Pathogen Types"
+            [options]="typeOptions()"
+            [showPlaceholder]="false">
+        </app-select>
+    </div>
+</div>
+
+<div class="library-grid" id="disease-library-grid">
+    @for (d of filteredDiseases(); track d.id) {
+    <app-library-card [d]="d"></app-library-card>
+    }
+</div>

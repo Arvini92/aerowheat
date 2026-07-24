@@ -1,0 +1,26 @@
+<app-glass-card extraClass="details-card" id="anatomy-details-card">
+    <div class="card-header" id="anatomy-details-header">
+        <h3>Anatomy Profile: {{ selectedSectionTitle() }}</h3>
+    </div>
+
+    <p style="font-size: 11px; line-height: 1.4; color: rgba(255, 255, 255, 0.85); margin-bottom: 12px;"
+        id="anatomy-details-desc">
+        {{ selectedSectionDesc() }}
+    </p>
+
+    <div style="margin-bottom: 12px;" id="symptoms-section">
+        <h4
+            style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
+            Common Pathological Symptoms</h4>
+        <div class="explorer-symptoms-list" id="explorer-symptoms-list">
+            @for (sym of currentSymptoms(); track sym.text) {
+            <div class="explorer-symptom-tag" [attr.id]="'symptom-tag-' + sym.text">
+                <app-check-circle-icon [width]="20" [height]="20"></app-check-circle-icon>
+                <div>
+                    <strong>{{ sym.text }}</strong> — {{ sym.detail }}
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</app-glass-card>

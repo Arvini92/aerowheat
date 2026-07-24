@@ -1,0 +1,33 @@
+<div class="preset-scans" id="preset-scans-panel">
+    <div class="flex items-center justify-between mb-3 px-2">
+        <div class="tech-label">DEMO_PRESETS // SELECT_MODE</div>
+        <div class="text-[8px] font-mono text-white/20">DB_LOAD: 0.04ms</div>
+    </div>
+    <div class="preset-buttons" id="preset-buttons-grid">
+        <app-button variant="preset" presetVariant="healthy" (click)="triggerScanSimulation('healthy')" [disabled]="isScanning()"
+            id="btn-preset-healthy">
+            <div class="preset-thumb" style="background-image: url('assets/healthy_wheat.png')"></div>
+            <span>Healthy</span>
+        </app-button>
+        <app-button variant="preset" presetVariant="rust" (click)="triggerScanSimulation('leaf_rust')" [disabled]="isScanning()"
+            id="btn-preset-leaf_rust">
+            <div class="preset-thumb" style="background-image: url('assets/leaf_rust.png')"></div>
+            <span>Leaf Rust</span>
+        </app-button>
+        <app-button variant="preset" presetVariant="stem" (click)="triggerScanSimulation('stem_rust')" [disabled]="isScanning()"
+            id="btn-preset-stem_rust">
+            <div class="preset-thumb" style="background-image: url('assets/stem_rust.png')"></div>
+            <span>Stem Rust</span>
+        </app-button>
+        <app-button variant="preset" presetVariant="mildew" (click)="triggerScanSimulation('powdery_mildew')" [disabled]="isScanning()"
+            id="btn-preset-powdery_mildew">
+            <div class="preset-thumb" style="background-image: url('assets/powdery_mildew.png')"></div>
+            <span>Mildew</span>
+        </app-button>
+        <app-button variant="preset" presetVariant="blight" (click)="triggerScanSimulation('fusarium_head_blight')"
+            [disabled]="isScanning()" id="btn-preset-head_blight">
+            <div class="preset-thumb" style="background-image: url('assets/fusarium_head_blight.png')"></div>
+            <span>Head Blight</span>
+        </app-button>
+    </div>
+</div>

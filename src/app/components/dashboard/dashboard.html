@@ -1,0 +1,14 @@
+<div class="dashboard-grid" id="dashboard-grid-root">
+    <app-left (scanComplete)="onScanComplete($event)"></app-left>
+    <app-right
+      [currentScanResult]="currentScanResult()"
+      [scanConfidence]="scanConfidence()"
+      [chartColor]="chartColor()"
+      (wizardDiagnosis)="onWizardDiagnosis($event)"
+      (exportPDF)="exportToPDF()"
+      (transferScanToLog)="transferScanToLog()"
+      (transferScanToPlanner)="transferScanToPlanner()"
+      (openDossier)="openDossier($event)"
+      (resetScanner)="resetScanner()"
+    ></app-right>
+</div>

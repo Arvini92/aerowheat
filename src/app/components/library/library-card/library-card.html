@@ -1,0 +1,19 @@
+<app-glass-card extraClass="library-card" [attr.id]="'disease-card-' + d().id">
+    <div class="library-card-img" [style.background-image]="'url(assets/' + d().id + '.png)'"
+        [attr.id]="'disease-img-' + d().id"></div>
+    <app-chip [label]="d().type" [cssClass]="'pathogen-tag ' + d().type" [id]="'pathogen-type-' + d().id"></app-chip>
+    <h3 [attr.id]="'disease-title-' + d().id">{{ d().name }}</h3>
+    <span class="scientific" [attr.id]="'disease-science-' + d().id">{{ d().scientific }}</span>
+    <p class="desc" [attr.id]="'disease-desc-' + d().id">{{ d().desc }}</p>
+    <div class="library-card-footer" [attr.id]="'disease-footer-' + d().id">
+        <div class="anatomy-badges" [attr.id]="'anatomy-badges-' + d().id">
+            @for (a of d().anatomy; track a) {
+            <span class="anatomy-badge" [attr.id]="'anatomy-badge-' + d().id + '-' + a">{{ a }}</span>
+            }
+        </div>
+        <app-button variant="secondary" size="icon" [id]="'read-dossier-btn-' + d().id" (click)="openDossier(d().id)">
+            <app-icon size="sm">menu_book</app-icon>
+            Read Pathogen Dossier
+        </app-button>
+    </div>
+</app-glass-card>

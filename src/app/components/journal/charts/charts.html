@@ -1,0 +1,70 @@
+<app-glass-card id="journal-analytics-card">
+    <div class="card-header" id="journal-analytics-header">
+        <h3>Regional Spore & Disease Analytics</h3>
+    </div>
+
+    <div class="dashboard-charts-row" id="journal-charts-row">
+        <!-- Bar chart of disease occurrences -->
+        <div class="chart-container" id="bar-chart-container">
+            <h4>Pathogen Occurrence Frequencies</h4>
+            <div class="svg-chart-wrapper" id="bar-chart-wrapper">
+                <svg width="100%" height="100%" viewBox="0 0 140 100" preserveAspectRatio="none" id="bar-chart-svg">
+                    <line x1="15" y1="10" x2="15" y2="85" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"
+                        id="bar-y-axis"></line>
+                    <line x1="15" y1="85" x2="135" y2="85" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"
+                        id="bar-x-axis"></line>
+
+                    <!-- Occurrence Bars -->
+                    @for (count of diseaseStats(); track $index; let i = $index) {
+                    <g [attr.id]="'bar-group-' + i">
+                        <rect class="chart-bar" [attr.id]="'chart-bar-' + i" [attr.x]="22 + i * 28"
+                            [attr.y]="85 - (count * 15)" width="14" [attr.height]="count * 15"
+                            [attr.fill]="barColors()[i % barColors().length]" rx="2"></rect>
+                        <text [attr.x]="29 + i * 28" y="94" fill="rgba(255,255,255,0.4)" font-size="6"
+                            text-anchor="middle" font-family="monospace" [attr.id]="'bar-label-' + i">
+                            {{ barLabels()[i] }}
+                        </text>
+                        <text [attr.x]="29 + i * 28" [attr.y]="81 - (count * 15)" fill="#ffffff" font-size="6"
+                            font-weight="bold" text-anchor="middle" font-family="monospace" [attr.id]="'bar-val-' + i">
+                            {{ count }}
+                        </text>
+                    </g>
+                    }
+                </svg>
+            </div>
+        </div>
+
+        <!-- Donut chart of severity levels -->
+        <div class="chart-container" id="donut-chart-container">
+            <h4>Severity Risk Distribution</h4>
+            <div class="svg-chart-wrapper" id="donut-chart-wrapper">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" id="donut-chart-svg">
+                    <!-- Outer Donut Circle -->
+                    <circle cx="50" cy="50" r="30" fill="transparent" stroke="rgba(255,255,255,0.03)" stroke-width="12"
+                        id="donut-outer-ring"></circle>
+
+                    <!-- Low Severity Ring segment (green) -->
+                    <circle cx="50" cy="50" r="30" fill="transparent" stroke="var(--primary)" stroke-width="12"
+                        class="donut-segment" [attr.stroke-dasharray]="lowPercent() + ' ' + (100 - lowPercent())"
+                        stroke-dashoffset="25" id="donut-segment-low"></circle>
+
+                    <!-- Med Severity Ring segment (gold) -->
+                    <circle cx="50" cy="50" r="30" fill="transparent" stroke="var(--accent-gold)" stroke-width="12"
+                        class="donut-segment" [attr.stroke-dasharray]="medPercent() + ' ' + (100 - medPercent())"
+                        [attr.stroke-dashoffset]="125 - lowPercent()" id="donut-segment-med"></circle>
+
+                    <!-- High Severity Ring segment (red) -->
+                    <circle cx="50" cy="50" r="30" fill="transparent" stroke="var(--color-danger)" stroke-width="12"
+                        class="donut-segment" [attr.stroke-dasharray]="highPercent() + ' ' + (100 - highPercent())"
+                        [attr.stroke-dashoffset]="125 - lowPercent() - medPercent()" id="donut-segment-high"></circle>
+
+                    <!-- Label indicators on center -->
+                    <text x="50" y="47" fill="#ffffff" font-size="8" font-weight="900" text-anchor="middle"
+                        font-family="sans-serif" id="donut-center-title">IPM</text>
+                    <text x="50" y="58" fill="rgba(255,255,255,0.5)" font-size="6" text-anchor="middle"
+                        font-family="monospace" id="donut-center-sub">METRICS</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+</app-glass-card>

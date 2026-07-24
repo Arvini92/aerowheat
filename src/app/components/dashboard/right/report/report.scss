@@ -1,0 +1,18 @@
+@media print {
+  body {
+    visibility: hidden;
+  }
+  #diagnostic-report-view,
+  #diagnostic-report-view * {
+    visibility: visible;
+  }
+  #diagnostic-report-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+}

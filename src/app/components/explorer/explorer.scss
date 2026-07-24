@@ -1,0 +1,203 @@
+.explorer-container {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 20px;
+}
+
+.explorer-plant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: -8px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.plant-svg-container {
+  width: 100%;
+  max-width: 220px;
+  height: 400px;
+}
+
+.plant-svg {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
+
+.anatomy-zone {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hotspot-bg {
+  fill: rgba(255, 255, 255, 0.01);
+  stroke: transparent;
+  transition: all 0.2s ease;
+}
+
+.anatomy-zone:hover .hotspot-bg {
+  fill: rgba(74, 214, 109, 0.05);
+  stroke: rgba(74, 214, 109, 0.3);
+  stroke-width: 1.5px;
+  stroke-dasharray: 3 3;
+}
+
+.anatomy-zone.active .hotspot-bg {
+  fill: rgba(221, 161, 94, 0.1);
+  stroke: var(--accent-gold);
+  stroke-width: 2px;
+  filter: url(#glow);
+}
+
+.plant-root-strand {
+  stroke: #4a3e2c;
+  stroke-width: 1.5px;
+  transition: stroke 0.2s;
+}
+
+.anatomy-zone:hover .plant-root-strand {
+  stroke: #7a684c;
+}
+
+.anatomy-zone.active .plant-root-strand {
+  stroke: var(--accent-gold);
+}
+
+.plant-stem {
+  transition: stroke 0.2s;
+}
+
+.anatomy-zone:hover .plant-stem {
+  stroke: #7c8c4c;
+}
+
+.anatomy-zone.active .plant-stem {
+  stroke: var(--accent-gold);
+}
+
+.plant-leaf {
+  transition: fill 0.2s;
+}
+
+.anatomy-zone:hover .plant-leaf {
+  fill: #809050;
+}
+
+.anatomy-zone.active .plant-leaf {
+  fill: var(--accent-gold);
+}
+
+.grain-kernel {
+  transition: fill 0.2s;
+}
+
+.anatomy-zone:hover .grain-kernel {
+  fill: #e3b078;
+}
+
+.anatomy-zone.active .grain-kernel {
+  fill: var(--accent-gold);
+}
+
+.explorer-details-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-controls-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pill-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border-subtle);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.pill-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.pill-btn.active {
+  background: var(--accent-gold);
+  color: #000000;
+  border-color: var(--accent-gold);
+}
+
+.explorer-symptoms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.explorer-symptom-tag {
+  background: rgba(221, 161, 94, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid rgba(221, 161, 94, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.3;
+}
+
+.explorer-symptom-tag svg {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.explorer-pathogens-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.explorer-pathogen-card {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--glass-border-subtle);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.explorer-pathogen-card:hover {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.explorer-pathogen-card h4 {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.explorer-pathogen-card .science {
+  font-size: 10px;
+  font-style: italic;
+  color: var(--text-muted);
+}

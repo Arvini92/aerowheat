@@ -1,0 +1,32 @@
+<div id="global-toast-container" class="toast-container">
+  @if (data) {
+  <div class="toast-item" [class]="data.type" [attr.id]="'toast-item-' + data.id">
+    <div class="toast-icon-wrapper" [attr.id]="'toast-icon-' + data.id">
+      @switch (data.type) {
+      @case ('success') {
+      <mat-icon class="toast-icon">check_circle</mat-icon>
+      }
+      @case ('info') {
+      <mat-icon class="toast-icon">info</mat-icon>
+      }
+      @case ('warning') {
+      <mat-icon class="toast-icon">warning</mat-icon>
+      }
+      @case ('error') {
+      <mat-icon class="toast-icon">error</mat-icon>
+      }
+      @case ('danger') {
+      <mat-icon class="toast-icon">report_problem</mat-icon>
+      }
+      }
+    </div>
+    <div class="toast-message" [attr.id]="'toast-msg-' + data.id">
+      {{ data.message }}
+    </div>
+    <app-button variant="toast-close" (click)="snackBarRef.dismiss()"
+      [id]="'toast-close-' + data.id" ariaLabel="Dismiss toast">
+      <mat-icon>close</mat-icon>
+    </app-button>
+  </div>
+  }
+</div>

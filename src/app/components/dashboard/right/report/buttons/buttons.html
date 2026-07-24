@@ -1,0 +1,23 @@
+<div class="report-actions print-hidden print:hidden" id="report-action-buttons">
+    <app-button variant="secondary" (click)="onPrintReport()" (btnClick)="onPrintReport()" id="print-report-btn" class="print-hidden">
+        Print Report
+    </app-button>
+    <app-button variant="secondary" (click)="onExportToPDF()" (btnClick)="onExportToPDF()" id="export-pdf-btn">
+        Export PDF
+    </app-button>
+    <app-button variant="success" (click)="onTransferScanToLog()" (btnClick)="onTransferScanToLog()" id="save-to-field-log-btn">
+        Save to Field Log
+    </app-button>
+    <app-button variant="primary" (click)="onTransferScanToPlanner()" (btnClick)="onTransferScanToPlanner()" id="generate-treatment-plan-btn">
+        Generate Treatment Plan
+    </app-button>
+    @if (currentScanResult()?.id !== 'healthy') {
+    <app-button variant="secondary" (click)="onOpenDossier(currentScanResult()!.id)" (btnClick)="onOpenDossier(currentScanResult()!.id)"
+        id="view-dossier-details-btn">
+        View Full Details
+    </app-button>
+    }
+    <app-button variant="reset" (click)="onResetScanner()" (btnClick)="onResetScanner()" id="scan-another-btn">
+        Scan Another
+    </app-button>
+</div>

@@ -1,0 +1,123 @@
+/* ── Search bar: flex row, input grows, two selects equal-width ── */
+.library-search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  /* glass-card provides the padding: 16px on all sides */
+}
+
+.search-input-wrapper {
+  flex: 1 1 0;           /* grow to fill all remaining space */
+  min-width: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+}
+
+/* Let app-input handle its own styling and focus states. */
+app-input {
+  display: block;
+  width: 100%;
+}
+
+/* ── Filter groups: equal fixed width, one each for anatomy & type ── */
+.filter-group {
+  flex: 0 0 180px;        /* fixed equal width for both filter selects */
+  min-width: 0;
+  display: block;
+}
+
+.filter-group app-select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.library-card {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.library-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--primary);
+}
+
+.library-card-img {
+  width: calc(100% + 32px);
+  height: 120px;
+  margin: -16px -16px 10px -16px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255, 255, 255, 0.01);
+  border-bottom: 1px solid var(--glass-border-subtle);
+  opacity: 0.8;
+}
+
+.library-card h3 {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 2px;
+}
+
+.library-card .scientific {
+  font-size: 10px;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.library-card .desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.library-card-footer {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anatomy-badges {
+  display: flex;
+  gap: 4px;
+}
+
+.anatomy-badge {
+  font-size: 9px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+}

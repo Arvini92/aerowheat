@@ -1,0 +1,84 @@
+<div class="glass-card modal-card" id="dossier-modal-card">
+    <app-button class="modal-close" variant="modal-close" (click)="closeModal()" id="close-modal-btn">
+        <mat-icon>close</mat-icon>
+    </app-button>
+
+    <div class="dossier-header" id="dossier-header">
+        <div class="dossier-image" [style.background-image]="'url(assets/' + dossier.id + '.png)'" id="dossier-img">
+        </div>
+        <div class="dossier-meta" id="dossier-meta">
+            <app-chip [label]="dossier.type" [cssClass]="'pathogen-tag ' + dossier.type"
+                [id]="'pathogen-type-' + dossier.id"></app-chip>
+
+            <h2 id="dossier-title">{{ dossier.name }}</h2>
+            <p class="scientific-name" id="dossier-scientific">{{ dossier.scientific }}</p>
+        </div>
+    </div>
+
+    <div class="dossier-grid" id="dossier-grid">
+        <div class="dossier-block full-width" id="dossier-desc-block">
+            <h4>Epidemiological Profile</h4>
+            <p id="dossier-desc">{{ dossier.desc }}</p>
+        </div>
+
+        <div class="dossier-block" id="dossier-anatomy-block">
+            <h4>Vulnerable Anatomy</h4>
+            <ul id="dossier-anatomy-list">
+                @for (a of dossier.anatomy; track a) {
+                <li style="text-transform: capitalize;">{{ a }}</li>
+                }
+            </ul>
+        </div>
+
+        <div class="dossier-block" id="dossier-severity-block">
+            <h4>Severity Risk Level</h4>
+            <div class="severity-indicator" style="margin-top: 4px; display: inline-flex;"
+                id="dossier-severity-indicator">
+                <span class="bullet" [class.green]="dossier.severity === 'Low'"
+                    [class.red]="dossier.severity === 'High'" [class.yellow]="dossier.severity === 'Medium'">
+                </span>
+                <span style="font-size: 11px; font-weight: 700; color: #ffffff;" id="dossier-severity-label">{{
+                    dossier.severity }}</span>
+            </div>
+        </div>
+
+        <div class="dossier-block full-width" id="dossier-symptoms-block">
+            <h4>Symptomatic Identification Keys</h4>
+            <ul id="dossier-symptoms-list">
+                @for (sym of dossier.symptoms; track sym) {
+                <li>{{ sym }}</li>
+                }
+            </ul>
+        </div>
+
+        <div class="dossier-block full-width" id="dossier-ipm-block">
+            <h4>Integrated Pest Management (IPM) Protocols</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;" id="dossier-ipm-details">
+                <div id="dossier-immediate-actions">
+                    <strong
+                        style="font-size: 9px; text-transform: uppercase; color: var(--color-danger); display: block; margin-bottom: 2px;">Immediate
+                        Actions:</strong>
+                    <p style="margin: 0; font-size: 11px;">{{ dossier.treatment.immediate }}</p>
+                </div>
+                <div id="dossier-chemical-controls">
+                    <strong
+                        style="font-size: 9px; text-transform: uppercase; color: var(--primary); display: block; margin-bottom: 2px;">Chemical
+                        Controls:</strong>
+                    <p style="margin: 0; font-size: 11px;">{{ dossier.treatment.chemical }}</p>
+                </div>
+                <div id="dossier-organic-alternatives">
+                    <strong
+                        style="font-size: 9px; text-transform: uppercase; color: var(--accent-gold); display: block; margin-bottom: 2px;">Organic
+                        Alternatives:</strong>
+                    <p style="margin: 0; font-size: 11px;">{{ dossier.treatment.organic }}</p>
+                </div>
+                <div id="dossier-preventive-measures">
+                    <strong
+                        style="font-size: 9px; text-transform: uppercase; color: var(--color-info); display: block; margin-bottom: 2px;">Preventive
+                        Agronomic Measures:</strong>
+                    <p style="margin: 0; font-size: 11px;">{{ dossier.treatment.preventive }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

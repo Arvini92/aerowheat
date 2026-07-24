@@ -1,0 +1,34 @@
+<div class="logs-grid" id="field-journal-logs-grid">
+    <!-- Left column: Add/Edit Log Form & Analytics -->
+    <div style="display: flex; flex-direction: column; gap: 20px;" id="journal-left-col">
+        <app-record
+          [(logField)]="logField"
+          [(logDiseaseId)]="logDiseaseId"
+          [(logSeverity)]="logSeverity"
+          [(logNotes)]="logNotes"
+          [editingLogId]="editingLogId"
+          [diseases]="diseases"
+          (formSubmit)="onSubmit($event)"
+          (cancel)="cancelEdit()"
+        ></app-record>
+        <app-charts
+          [diseaseStats]="diseaseStats()"
+          [barColors]="barColors"
+          [barLabels]="barLabels"
+          [lowPercent]="lowPercent()"
+          [medPercent]="medPercent()"
+          [highPercent]="highPercent()"
+        ></app-charts>
+    </div>
+
+    <!-- Right column: Historical Logs list -->
+    <div style="display: flex; flex-direction: column; gap: 20px;" id="journal-right-col">
+        <app-logs
+          [logs]="logs()"
+          (clearAll)="clearAllLogs()"
+          (edit)="editLog($event)"
+          (delete)="deleteLog($event)"
+        ></app-logs>
+        <app-diagnostic-chart [logs]="logs()" id="journal-trend-chart"></app-diagnostic-chart>
+    </div>
+</div>

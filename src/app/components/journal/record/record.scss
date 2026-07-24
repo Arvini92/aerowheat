@@ -1,0 +1,137 @@
+/* ============================================================
+   RECORD FORM — Component-level styles
+   app-record / #log-entry-form-card
+   Same height + alignment fixes as app-form (planner).
+   ============================================================ */
+
+:host {
+  display: block;
+}
+
+/* ── Form layout ── */
+.record-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0 0;
+}
+
+/* ── Form group: label + control ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Two-column row ── */
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group.col {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ── app-input fills full width in form columns ── */
+app-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Textarea: natural height ── */
+textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+  resize: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+textarea::placeholder {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+textarea:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+textarea:focus {
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0 3px rgba(74, 214, 109, 0.10);
+}
+
+/* ── app-select: fill its parent column ── */
+app-select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Form actions row ── */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* When only Save Entry is visible (no cancel), stretch it full width */
+app-button.full-width {
+  display: block;
+  width: 100%;
+  flex: 1;
+}
+
+app-button.full-width ::ng-deep .btn-host,
+app-button.full-width ::ng-deep button {
+  width: 100%;
+}
+
+app-button ::ng-deep button {
+  padding: 12px 16px !important;
+  font-size: 12px !important;
+  border-radius: 10px !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Primary (Save Entry) gets green glow */
+app-button ::ng-deep button.btn-primary {
+  box-shadow: 0 2px 16px rgba(74, 214, 109, 0.25) !important;
+}
+
+app-button ::ng-deep button.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 4px 24px rgba(74, 214, 109, 0.40) !important;
+}

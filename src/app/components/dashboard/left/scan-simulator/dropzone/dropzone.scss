@@ -1,0 +1,168 @@
+:host {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.dropzone {
+  position: relative;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(74, 214, 109, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.dropzone.is-dragging {
+  border-color: var(--primary);
+  background: rgba(74, 214, 109, 0.05);
+}
+
+.viewfinder-corners {
+  position: absolute;
+  inset: 20px;
+  pointer-events: none;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+
+  &.active {
+    opacity: 0.8;
+    inset: 40px;
+    animation: viewfinder-pulse 2s infinite;
+  }
+
+  .corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary);
+    
+    &.tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+    &.tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+    &.bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+    &.br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+  }
+}
+
+@keyframes viewfinder-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.technical-btn {
+  ::ng-deep button {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-muted) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 8px 16px !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.2s ease !important;
+
+    mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+    }
+
+    &:hover {
+      background: rgba(74, 214, 109, 0.1) !important;
+      border-color: var(--primary) !important;
+      color: #fff !important;
+      box-shadow: 0 0 15px rgba(74, 214, 109, 0.2) !important;
+    }
+  }
+}
+
+.btn-tech-primary {
+  ::ng-deep button {
+    background: var(--primary) !important;
+    color: #000 !important;
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 10px 24px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 20px rgba(74, 214, 109, 0.4) !important;
+  }
+}
+
+.btn-tech-outline {
+  ::ng-deep button {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: #fff !important;
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    padding: 10px 20px !important;
+    border-radius: 4px !important;
+    backdrop-filter: blur(4px) !important;
+  }
+}
+
+.dropzone-default {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 32px;
+  gap: 4px;
+  text-align: center;
+  z-index: 5;
+}
+
+.scanner-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.scanner-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.animate-scanning {
+  animation: scanning 3s linear infinite;
+}
+
+@keyframes scanning {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

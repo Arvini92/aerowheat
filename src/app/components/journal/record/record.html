@@ -1,0 +1,74 @@
+<app-glass-card id="log-entry-form-card">
+    <div class="card-header" id="log-entry-form-header">
+        @if (editingLogId() !== null) {
+        <h3>Modify Journal Observation</h3>
+        } @else {
+        <h3>Record Field Observation</h3>
+        }
+    </div>
+
+    <form [formGroup]="formGroup" (submit)="onSubmit($event)" class="record-form" id="journal-entry-form">
+        <!-- Field identifier — full width -->
+        <div class="form-group" id="journal-field-group">
+            <label for="log-field">Field Identifier / Plot Zone</label>
+            <app-input
+                id="log-field"
+                formControlName="logField"
+                placeholder="e.g. Zone B-12"
+                [error]="getErrorMessage('logField')"
+            />
+        </div>
+
+        <!-- Disease + Severity row -->
+        <div class="form-row" id="journal-form-row">
+            <div class="form-group col" id="journal-disease-group">
+                <label for="log-disease">Diagnosed Pathology</label>
+                <app-select
+                    id="log-disease"
+                    formControlName="logDiseaseId"
+                    placeholder="Select Crop Disease"
+                    [options]="selectOptions()"
+                    [error]="getErrorMessage('logDiseaseId')">
+                </app-select>
+            </div>
+            <div class="form-group col" id="journal-severity-group">
+                <label for="log-severity">Observed Severity (%)</label>
+                <app-input
+                    type="number"
+                    id="log-severity"
+                    formControlName="logSeverity"
+                    placeholder="1 – 100"
+                    [min]="1"
+                    [max]="100"
+                    [error]="getErrorMessage('logSeverity')"
+                />
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group" id="journal-notes-group">
+            <app-textarea
+                id="log-notes"
+                formControlName="logNotes"
+                label="Agronomic Notes &amp; Action Plan"
+                [rows]="3"
+                placeholder="Scouting symptoms, local humidity, immediate fungicide treatment plans..."
+                [error]="getErrorMessage('logNotes')">
+            </app-textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions" id="journal-form-actions">
+            @if (editingLogId() !== null) {
+            <app-button variant="secondary" (btnClick)="cancelEdit()" id="cancel-edit-btn">Cancel</app-button>
+            }
+            <app-button variant="primary" type="submit" id="save-log-btn" [class.full-width]="editingLogId() === null">
+                @if (editingLogId() !== null) {
+                Update Log
+                } @else {
+                Save Entry
+                }
+            </app-button>
+        </div>
+    </form>
+</app-glass-card>

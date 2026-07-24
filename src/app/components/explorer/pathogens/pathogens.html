@@ -1,0 +1,17 @@
+<app-glass-card extraClass="pathogens-card" id="associated-pathogens-card">
+    <div class="card-header" id="associated-pathogens-header">
+        <h3>Associated Pathogens</h3>
+    </div>
+
+    <div class="explorer-pathogens-grid" id="explorer-pathogens-grid">
+        @for (path of currentPathogens(); track path.id) {
+        <button type="button" class="explorer-pathogen-card" [attr.id]="'pathogen-card-' + path.id"
+            (click)="openDossier.emit(path.id)">
+            <app-chip [label]="path.type" [cssClass]="'pathogen-tag ' + path.type"
+                [id]="'pathogen-type-' + path.id"></app-chip>
+            <h4 [attr.id]="'pathogen-title-' + path.id">{{ path.name }}</h4>
+            <span class="science" [attr.id]="'pathogen-science-' + path.id">{{ path.scientific }}</span>
+        </button>
+        }
+    </div>
+</app-glass-card>

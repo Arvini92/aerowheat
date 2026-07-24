@@ -1,0 +1,11 @@
+.report-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media print {
+    .print-hidden {
+        display: none !important;
+    }
+}

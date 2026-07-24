@@ -1,0 +1,28 @@
+:host {
+  display: inline-block;
+}
+
+.pathogen-tag {
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  align-self: flex-start;
+  white-space: nowrap;
+}
+
+.pathogen-tag.fungal {
+  background: rgba(221, 161, 94, 0.15) !important;
+  color: var(--accent-gold) !important;
+  border: 1px solid rgba(221, 161, 94, 0.2) !important;
+}
+
+.pathogen-tag.viral {
+  background: rgba(231, 111, 81, 0.15) !important;
+  color: var(--color-danger) !important;
+  border: 1px solid rgba(231, 111, 81, 0.2) !important;
+}
+
+.pathogen-tag.bacterial {
+  background: rgba(90, 159, 212, 0.15) !important;
+  color: var(--color-info) !important;
+  border: 1px solid rgba(90, 159, 212, 0.2) !important;
+}

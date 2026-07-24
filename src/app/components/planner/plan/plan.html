@@ -1,0 +1,86 @@
+<app-glass-card extraClass="planner-report-card" id="planner-report-card">
+    <!-- Placeholder -->
+    @if (!activePlan()) {
+    <div class="planner-placeholder" id="planner-placeholder-view">
+        <app-document-icon id="doc-placeholder-icon"></app-document-icon>
+        <h3>No Treatment Plan Generated</h3>
+        <p>Select a wheat pathogen and fill out the field indicators to compile a customized Integrated Pest Management
+            schedule.</p>
+    </div>
+    }
+
+    <!-- Generated plan report -->
+    @if (activePlan(); as plan) {
+    <div class="treatment-report" id="treatment-report-view">
+        <!-- Print Header Title Banner -->
+        <div class="report-top-banner" id="report-top-banner">
+            <h1 class="report-main-title" id="report-main-title">AEROWHEAT AGRONOMIC INTELLIGENCE</h1>
+            <div class="report-main-divider" id="report-main-divider"></div>
+        </div>
+
+        <div class="report-header" id="report-header-actions">
+            <span class="report-brand">AeroWheat IPM Protocol</span>
+            <app-button variant="secondary" size="icon" (click)="printPlan()" id="print-plan-btn" class="print-hidden">
+                <app-print-icon id="print-plan-icon"></app-print-icon>
+                Print Plan
+            </app-button>
+        </div>
+
+        <div class="report-meta-box" id="report-meta-grid">
+            <div class="meta-item">
+                <span class="meta-label">Target Pathogen:</span>
+                <span class="meta-val">{{ plan.diseaseName }} @if (plan.scientificName) { ({{ plan.scientificName }}) }</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Growth Stage:</span>
+                <span class="meta-val">{{ plan.growthStage || 'Flag Leaf Emergence / Booting (Feekes 9-10)' }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Severity Index:</span>
+                <span class="meta-val capitalize">{{ plan.severity }} @if (plan.severityPct) { ({{ plan.severityPct }}) }</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Regimen Class:</span>
+                <span class="meta-val">{{ plan.regimenClass || 'Integrated Pest Management (IPM)' }}</span>
+            </div>
+        </div>
+
+        <!-- Management Sections -->
+        <div class="report-section-block urgent" id="report-immediate-block">
+            <h4 class="block-title">IMMEDIATE RESPONSE PROTOCOL</h4>
+            <p class="block-body">{{ plan.immediate }}</p>
+        </div>
+
+        @if (plan.flagLeafWarning) {
+        <div class="report-section-block warning" id="report-warning-block">
+            <h4 class="block-title">FLAG LEAF PROTECTION WARNING</h4>
+            <p class="block-body">{{ plan.flagLeafWarning }}</p>
+        </div>
+        }
+
+        <div class="report-section-block info" id="report-chemical-block">
+            <h4 class="block-title">CHEMICAL / BIOLOGICAL APPLICATION DETAILS</h4>
+            <p class="block-body">{{ plan.chemical }}</p>
+            @if (plan.chemicalBullets && plan.chemicalBullets.length) {
+            <ul class="bullet-list">
+                @for (b of plan.chemicalBullets; track b) {
+                <li><span class="bullet-arrow">►</span> {{ b }}</li>
+                }
+            </ul>
+            }
+        </div>
+
+        <div class="report-section-block success" id="report-preventive-block">
+            <h4 class="block-title">CULTURAL & PREVENTIVE PRACTICES</h4>
+            <p class="block-body">{{ plan.preventive }}</p>
+            @if (plan.preventiveBullets && plan.preventiveBullets.length) {
+            <ul class="bullet-list">
+                @for (b of plan.preventiveBullets; track b) {
+                <li><span class="bullet-arrow">►</span> {{ b }}</li>
+                }
+            </ul>
+            }
+        </div>
+    </div>
+    }
+</app-glass-card>

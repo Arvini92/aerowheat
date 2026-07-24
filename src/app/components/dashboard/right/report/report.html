@@ -1,0 +1,72 @@
+<div class="report-active" id="diagnostic-report-view" #reportView>
+    <!-- Official Print Header (Visible ONLY when printing) -->
+    <div class="print-header-banner hidden print:block mb-6 border-b-2 border-slate-900 pb-4" id="print-header-banner">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-black text-slate-900 tracking-tight uppercase">AeroWheat Agricultural Intelligence</h1>
+                <p class="text-xs font-bold text-slate-700 mt-0.5">Official AI Field Scouting, Pathology & Telemetry Diagnostic Report</p>
+            </div>
+            <div class="text-right text-xs font-mono text-slate-800">
+                <div><span class="font-bold text-slate-900">DATE:</span> {{ printDate }}</div>
+                <div><span class="font-bold text-slate-900">REPORT ID:</span> #AW-{{ printReportId }}</div>
+                <div><span class="font-bold text-slate-900">DIAGNOSTIC ACCURACY:</span> {{ scanConfidence() }}%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-header print:hidden" id="report-header">
+        <h3>Diagnostic Report</h3>
+    </div>
+
+    <div class="report-content" id="report-content-body">
+        <div class="report-headline" id="report-headline-card">
+            <div class="diag-score-ring cursor-help" id="diagnostic-score-ring" title="AI Confidence: {{ scanConfidence() }}%">
+                <app-circular-chart [percentage]="scanConfidence()" [color]="chartColor()" />
+            </div>
+            <div class="headline-text" id="headline-text-block">
+                <span class="report-label">PRIMARY DIAGNOSIS</span>
+                <h2 id="diagnosed-disease-name">{{ currentScanResult()?.name }}</h2>
+                <span class="scientific-name" id="diagnosed-disease-scientific">{{ currentScanResult()?.scientific
+                    }}</span>
+            </div>
+        </div>
+
+        <div class="report-alerts" id="report-alerts-block">
+            <div class="severity-indicator" id="report-severity-indicator">
+                <span class="bullet" [class.green]="currentScanResult()?.id === 'healthy'"
+                    [class.red]="currentScanResult()?.id !== 'healthy' && currentScanResult()?.severity === 'High'"
+                    [class.yellow]="currentScanResult()?.id !== 'healthy' && currentScanResult()?.severity !== 'High'">
+                </span>
+                <span class="text">Severity Risk: {{ currentScanResult()?.severity }}</span>
+            </div>
+            <div class="pathogen-type" id="report-pathogen-type">Pathogen: {{ currentScanResult()?.type }}</div>
+        </div>
+
+        <div class="report-section" id="report-symptoms-section">
+            <h4>Identified Symptoms & Markers</h4>
+            <ul class="report-list" id="report-symptoms-list">
+                @for (s of currentScanResult()?.symptoms; track s) {
+                <li>{{ s }}</li>
+                }
+            </ul>
+        </div>
+
+        @if (currentScanResult(); as res) {
+            <app-treatment-timeline [scanResult]="res" class="block mt-6" />
+        }
+        <app-trend-chart class="block mt-6" />
+        <app-map-viz class="block mt-6" />
+        <app-weather-forecast class="block mt-6" />
+        <app-crop-health-tip class="block mt-6" />
+        <app-scouting-planner class="block mt-6" />
+
+        <app-buttons
+          [currentScanResult]="currentScanResult()"
+          (exportPDF)="exportPDF.emit()"
+          (transferScanToLog)="transferScanToLog.emit()"
+          (transferScanToPlanner)="transferScanToPlanner.emit()"
+          (openDossier)="openDossier.emit($event)"
+          (resetScanner)="resetScanner.emit()"
+        ></app-buttons>
+    </div>
+</div>

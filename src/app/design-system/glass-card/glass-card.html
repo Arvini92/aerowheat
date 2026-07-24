@@ -1,0 +1,3 @@
+<mat-card [attr.id]="id() ?? ''" class="glass-card" [ngClass]="extraClass()" (click)="clicked.emit($event)">
+  <ng-content></ng-content>
+</mat-card>
