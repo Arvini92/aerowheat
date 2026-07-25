@@ -1,6 +1,12 @@
 # AeroWheat — Angular Browser Diagnostic Portal
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-healthy--planet.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://healthy-planet.netlify.app)
+[![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.io/)
+[![ONNX Runtime](https://img.shields.io/badge/ONNX%20Runtime-005FE6?style=for-the-badge&logo=onnx&logoColor=white)](https://onnxruntime.ai/)
+
 An enterprise-grade, browser-native computer vision & diagnostic interface built with **Angular** and **ONNX Runtime Web**. AeroWheat enables real-time, zero-backend wheat leaf disease detection directly on the client side using WebAssembly and WebGPU execution backends, augmented with Hugging Face client-side WebGPU LLMs (e.g., `Qwen2.5-Coder` / `Qwen` models via `@huggingface/transformers`) and local Retrieval-Augmented Generation (RAG) vector/knowledge services for automated agronomic insights.
+
+🌐 **Live Deployment:** [https://healthy-planet.netlify.app](https://healthy-planet.netlify.app)
 
 ---
 
@@ -18,23 +24,23 @@ An enterprise-grade, browser-native computer vision & diagnostic interface built
 ## 🏗️ Architecture Overview
 
 ```text
-               ┌──────────────────────────────┐
-               │    Local Leaf Image Upload   │
-               └──────────────┬───────────────┘
-                              │
+                ┌──────────────────────────────┐
+                │     Local Leaf Image Upload  │
+                └──────────────┬───────────────┘
+                               │
                       [ Canvas Pipeline ]
-                              │
-               ┌──────────────┴───────────────┐
-               │    Letterbox to 640 x 640    │
-               └──────────────┬───────────────┘
-                              │
-               ┌──────────────┴───────────────┐
-               │   ONNX WebAssembly / WebGPU  │ ──► [ Local best.onnx ]
-               └──────────────┬───────────────┘
-                              │
+                               │
+                ┌──────────────┴───────────────┐
+                │    Letterbox to 640 x 640    │
+                └──────────────┬───────────────┘
+                               │
+                ┌──────────────┴───────────────┐
+                │   ONNX WebAssembly / WebGPU  │ ──► [ Local best.onnx ]
+                └──────────────┬───────────────┘
+                               │
               [ Bounding Boxes & Class Probabilities ]
-                              │
-      ┌───────────────────────┴───────────────────────┐
+                               │
+      ┌────────────────────────┴───────────────────────┐
       │                                               │
 ┌─────▼─────────────────────────┐   ┌─────────────────▼─────────────┐
 │ High-FPS Canvas Bounding Box  │   │  Local RAG Knowledge Engine   │
