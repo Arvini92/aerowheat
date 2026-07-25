@@ -22,10 +22,13 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "inlineStyleLanguage": "scss",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
+            "externalDependencies": [
+              "@google/genai",
+              "onnxruntime-web",
+              "onnxruntime-node"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -73,7 +76,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "proxyConfig": "proxy.conf.json"
+            "port": 3000,
+            "host": "0.0.0.0"
           },
           "configurations": {
             "production": {

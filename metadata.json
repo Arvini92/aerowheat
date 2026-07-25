@@ -1,7 +1,10 @@
 {
   "name": "AeroWheat Diagnostics",
   "description": "Advanced wheat disease diagnostics and agronomic treatment intelligence using computer vision and symptom wizardry.",
-  "requestFramePermissions": ["camera"],
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]

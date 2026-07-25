@@ -189,8 +189,8 @@ export class SelectComponent implements ControlValueAccessor {
   protected isDisabled = signal<boolean>(false);
 
   // ControlValueAccessor ────────────────────────────────────────────────────
-  private onChangeFn: (value: string) => void = () => {};
-  private onTouchedFn: () => void = () => {};
+  private onChangeFn: (value: string) => void = () => void 0;
+  private onTouchedFn: () => void = () => void 0;
 
   writeValue(value: string): void {
     this.internalValue.set(value ?? '');

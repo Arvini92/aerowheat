@@ -226,8 +226,8 @@
 
       <!-- Disease Source Detail Modal -->
       @if (selectedSource(); as src) {
-        <div class="source-modal-overlay" (click)="closeSourceDetails()">
-          <div class="source-modal-card" (click)="$event.stopPropagation()">
+        <div class="source-modal-overlay" (click)="closeSourceDetails($event)" (keydown.enter)="closeSourceDetails($event)" (keydown.space)="closeSourceDetails($event)" role="button" tabindex="0">
+          <div class="source-modal-card">
             <div class="source-modal-header">
               <div>
                 <h4>{{ src.disease_name }}</h4>

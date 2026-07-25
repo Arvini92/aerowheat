@@ -60,7 +60,7 @@ export class AiService {
 
     try {
       // Initialize vector RAG service alongside main LLM engine
-      await this.ragService.init().catch(err => {
+      await this.ragService.init().catch(() => {
         console.log('RAG service initialization completed with fallback configuration');
       });
 
@@ -103,13 +103,13 @@ export class AiService {
       
       if (hasWebGPU) {
         try {
-          this.generator = await pipeline('text-generation', this.modelId, options as any) as TextGenerationPipeline;
-        } catch (gpuErr) {
+          this.generator = await pipeline('text-generation', this.modelId, options as Record<string, unknown>) as TextGenerationPipeline;
+        } catch {
           console.log('WebGPU text-generation not available, using CPU/WASM backend');
           this.generator = await pipeline('text-generation', this.modelId, {
             ...options,
             device: undefined
-          } as any) as TextGenerationPipeline;
+          } as Record<string, unknown>) as TextGenerationPipeline;
         }
       } else {
         // Use CPU/WASM by default if WebGPU is not available
@@ -117,7 +117,7 @@ export class AiService {
         this.generator = await pipeline('text-generation', this.modelId, {
           ...options,
           device: undefined
-        } as any) as TextGenerationPipeline;
+        } as Record<string, unknown>) as TextGenerationPipeline;
       }
 
       if (this.generator?.tokenizer && !this.generator.tokenizer.chat_template) {
@@ -182,7 +182,7 @@ export class AiService {
       }
     }
 
-    let resultText = '';
+    let resultText: string;
 
     if (this.generator) {
       this._isGenerating = true;
@@ -214,7 +214,7 @@ export class AiService {
           streamer
         });
 
-        const fullText = Array.isArray(output) ? (output[0] as any)?.generated_text : accumulatedText;
+        const fullText = Array.isArray(output) ? (output[0] as Record<string, unknown>)?.generated_text : accumulatedText;
         
         if (typeof fullText === 'string') {
           resultText = this.cleanQwenOutput(fullText);
@@ -241,6 +241,107 @@ export class AiService {
     };
   }
 
+  private getDynamicThoughts(query: string): string {
+    const q = query.toLowerCase();
+    
+    if (q.includes('library') || q.includes('database') || q.includes('what diseases') || q.includes('list')) {
+      return `<thinking>
+• User requested a catalog or directory of diseases stored in our system.
+• Scanning local memory database containing 8 critical wheat diseases.
+• Preparing summary details for each record:
+  - Fungal rusts (Leaf, Stripe, Stem)
+  - Blights and blotches (Fusarium, Septoria)
+  - Smuts and mildews (Loose Smut, Powdery Mildew)
+  - Crown and vascular root pathogens (Take-all Root Rot)
+• Structuring list in a highly readable format with severity and anatomy keys.
+</thinking>`;
+    }
+    
+    if (q.includes('scout') || q.includes('checklist') || q.includes('field checklist')) {
+      return `<thinking>
+• Parsing request for crop scouting instructions and field protocols.
+• Organizing diagnostic steps by wheat physiological anatomy (Head, Leaves, Stem, Roots).
+• Fetching pathological targets for each anatomical zone.
+• Formatting sequential 4-zone checklists for on-field evaluation.
+</thinking>`;
+    }
+    
+    if (q.includes('rust')) {
+      return `<thinking>
+• User query detected: "Rust" symptoms or treatments.
+• Searching local database for Puccinia rust species:
+  - Leaf Rust (*Puccinia triticina*): Orange-brown pustules, scattered.
+  - Stripe Rust (*Puccinia striiformis*): Bright yellow-orange pustules in linear stripes.
+  - Stem Rust (*Puccinia graminis*): Reddish-brown elongating stem lesions.
+• Synthesizing immediate management guidelines: triazole/strobilurin chemicals vs organic prevention.
+</thinking>`;
+    }
+    
+    if (q.includes('blight') || q.includes('fusarium') || q.includes('head blight')) {
+      return `<thinking>
+• Query detected: Fusarium Head Blight / Scab.
+• Accessing clinical pathology records for *Fusarium graminearum*.
+• Matching high risk weather (moisture/warmth at anthesis) and physical markers (bleached heads, orange spores).
+• Compiling triazole chemical spray windows and preventive deep tillage practices.
+</thinking>`;
+    }
+    
+    if (q.includes('mildew') || q.includes('powdery')) {
+      return `<thinking>
+• Query relates to Powdery Mildew (*Blumeria graminis f. sp. tritici*).
+• Accessing records for white-gray powdery patches and fungal cleistothecia.
+• Generating cultural controls (canopy aeration) and active fungicide solutions.
+</thinking>`;
+    }
+    
+    if (q.includes('smut') || q.includes('loose smut')) {
+      return `<thinking>
+• Query identified: Loose Smut (*Ustilago nuda*).
+• Identifying systemic seed-borne transmission vectors.
+• Emphasizing critical clinical fact: Foliar fungicides are ineffective; systemic seed treatment (carboxin/triazole) is the sole control.
+</thinking>`;
+    }
+    
+    if (q.includes('septoria') || q.includes('blotch')) {
+      return `<thinking>
+• Query matches Septoria Leaf Blotch (*Mycosphaerella graminicola*).
+• Referencing light brown lens-shaped lesions with black pycnidia pimples.
+• Constructing water splash transmission mitigation and foliar treatment schedules.
+</thinking>`;
+    }
+    
+    if (q.includes('take-all') || q.includes('root rot') || q.includes('take all')) {
+      return `<thinking>
+• Pathogen detected: Take-all Root Rot (*Gaeumannomyces graminis*).
+• Accessing soil-borne vascular system database.
+• Compiling diagnosis of coal-black roots, whiteheads, and ease of plant pulling.
+• Formulating broadleaf rotation and water drainage control steps.
+</thinking>`;
+    }
+    
+    return `<thinking>
+• Analyzing query: "${query.slice(0, 45)}...".
+• Running search filters on 8 cataloged wheat pathology templates.
+• Looking for matching symptoms, anatomical targets, or disease descriptions in the RAG vector index.
+• Compiling expert agronomist tips and disease library suggestions.
+</thinking>`;
+  }
+
+  private async streamString(
+    fullText: string,
+    onChunk: (chunk: string) => void,
+    chunkSize: number,
+    delayMs: number
+  ): Promise<void> {
+    let index = 0;
+    while (index < fullText.length) {
+      const chunk = fullText.slice(index, index + chunkSize);
+      onChunk(chunk);
+      index += chunkSize;
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+
   private async generateLocalDbResponse(
     messages: { role: string; content: string }[],
     onChunk: (chunk: string) => void
@@ -248,7 +349,7 @@ export class AiService {
     const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')?.content.trim() || '';
     const query = lastUserMsg.toLowerCase();
 
-    let response = '';
+    let response: string;
 
     if (query.includes('library') || query.includes('database') || query.includes('what diseases') || query.includes('list')) {
       response = `**AeroWheat Plant Pathology Database (8 Cataloged Diseases):**\n\n` +
@@ -319,8 +420,11 @@ export class AiService {
       }
     }
 
-    onChunk(response);
-    return response;
+    const thoughts = this.getDynamicThoughts(query);
+    await this.streamString(thoughts + '\n\n', onChunk, 6, 12);
+    await this.streamString(response, onChunk, 12, 16);
+
+    return thoughts + '\n\n' + response;
   }
 
   async generateResponse(
@@ -348,7 +452,7 @@ export class AiService {
   }
 
   private getSystemContext(ragContext = ''): string {
-    let contextStr = '';
+    let contextStr: string;
     if (ragContext) {
       contextStr = `\nRelevant knowledge retrieved for this query:\n${ragContext}\n`;
     } else {

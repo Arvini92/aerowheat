@@ -34,6 +34,10 @@ import { CommonModule } from '@angular/common';
         (dragleave)="onDragLeave($event)"
         (drop)="onDrop($event)"
         (click)="!isCameraActive() && !capturedImage() && triggerFileInput()"
+        (keydown.enter)="!isCameraActive() && !capturedImage() && triggerFileInput()"
+        (keydown.space)="!isCameraActive() && !capturedImage() && triggerFileInput()"
+        role="button"
+        tabindex="0"
       >
         <!-- Hidden Input File -->
         <input 

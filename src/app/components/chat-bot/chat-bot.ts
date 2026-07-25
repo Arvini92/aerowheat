@@ -126,7 +126,10 @@ export class ChatBot {
     this.selectedSource.set(source);
   }
 
-  closeSourceDetails(): void {
+  closeSourceDetails(event?: Event): void {
+    if (event && event.target !== event.currentTarget) {
+      return;
+    }
     this.selectedSource.set(null);
   }
 
@@ -379,7 +382,69 @@ export class ChatBot {
 
   formatMessageText(text: string): string {
     if (!text) return '';
-    let safe = text
+    
+    let thinkingHtml = '';
+    let remainingText = text;
+    
+    if (text.includes('<thinking>')) {
+      const parts = text.split('<thinking>');
+      const beforeThinking = parts[0];
+      const afterThinking = parts[1] || '';
+      
+      if (afterThinking.includes('</thinking>')) {
+        const subParts = afterThinking.split('</thinking>');
+        const thinkingContent = subParts[0].trim();
+        const afterThinkingContent = subParts.slice(1).join('</thinking>');
+        
+        const escapedContent = thinkingContent
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\n/g, '<br>');
+        
+        thinkingHtml = `
+          <div class="mb-3.5 rounded-lg border border-stone-200 bg-stone-50/70 p-3.5 dark:border-stone-800 dark:bg-stone-900/60 text-xs">
+            <div class="flex items-center gap-1.5 font-medium text-stone-500 dark:text-stone-400 mb-2">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+              Thought Process
+            </div>
+            <div class="text-stone-600 dark:text-stone-300 italic pl-2 border-l border-stone-200 dark:border-stone-800 space-y-1 font-serif leading-relaxed">
+              ${escapedContent}
+            </div>
+          </div>
+        `;
+        remainingText = beforeThinking + afterThinkingContent;
+      } else {
+        const thinkingContent = afterThinking.trim();
+        const escapedContent = thinkingContent
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\n/g, '<br>');
+        
+        thinkingHtml = `
+          <div class="mb-3.5 rounded-lg border border-amber-100 bg-amber-50/20 p-3.5 dark:border-amber-950/20 dark:bg-amber-950/10 text-xs">
+            <div class="flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-400 mb-2">
+              <svg class="animate-spin text-amber-500" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Thinking...
+            </div>
+            <div class="text-amber-800/80 dark:text-amber-300/80 italic pl-2 border-l border-amber-200 dark:border-amber-900 space-y-1 font-serif leading-relaxed">
+              ${escapedContent}
+            </div>
+          </div>
+        `;
+        remainingText = beforeThinking;
+      }
+    }
+    
+    let safe = remainingText
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
@@ -388,6 +453,6 @@ export class ChatBot {
     safe = safe.replace(/^[•\-*]\s*(.*)$/gm, '• $1');
     safe = safe.replace(/\n/g, '<br>');
     
-    return safe;
+    return thinkingHtml + safe;
   }
 }

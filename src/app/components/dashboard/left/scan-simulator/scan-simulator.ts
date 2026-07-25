@@ -7,6 +7,7 @@ import { Dropzone } from './dropzone/dropzone';
 import { Preview } from './preview/preview';
 import { DISEASE_DATABASE } from '../../../../data';
 import { YoloDetection, YoloService } from './yolo.service';
+import { ClassifierService } from './classifier.service';
 import { ToastService } from '@/src/app/design-system/toast/toast.service';
 
 export interface HeatmapSpot {
@@ -55,6 +56,7 @@ export class ScanSimulator implements OnInit {
   private toastService = inject(ToastService);
   private appState = inject(AppState);
   private yoloService = inject(YoloService);
+  private classifierService = inject(ClassifierService);
 
   // References
   @ViewChild(Preview) preview!: Preview;
@@ -140,11 +142,11 @@ export class ScanSimulator implements OnInit {
     }
 
     const statuses = [
-      { thresh: 15, msg: 'Aligning camera & focus...' },
-      { thresh: 35, msg: 'Measuring vegetation index (NDVI)...' },
-      { thresh: 55, msg: 'Analyzing cellular tissue structure...' },
+      { thresh: 15, msg: 'Initializing Neural Engines...' },
+      { thresh: 35, msg: 'Verifying crop subject (MobileNet)...' },
+      { thresh: 55, msg: 'Analyzing vegetation index (NDVI)...' },
       { thresh: 75, msg: 'Extracting chlorotic lesion boundaries...' },
-      { thresh: 90, msg: 'Executing YOLOv24 object detection...' },
+      { thresh: 90, msg: 'Executing Pathogen YOLO sweep...' },
       { thresh: 100, msg: 'Classification completed.' }
     ];
 
@@ -165,15 +167,31 @@ export class ScanSimulator implements OnInit {
   }
 
   async finalizeScan(presetId: string, isCustom = true) {
-    this.isScanning.set(false);
-    let finalResult: ScanResult;
+    let finalResult: ScanResult | null;
     let conf: number;
 
     if (isCustom) {
-      this.scanStatusText.set('Analyzing cellular crop signature locally...');
-      // Use local YOLOv24 classifier for everything
-      finalResult = await this.runLocalFallback();
-      conf = finalResult.id === 'healthy' ? 99 : Math.floor(Math.random() * 10) + 84;
+      this.scanStatusText.set('Validating crop signature...');
+      
+      if (this.preview?.imageElement) {
+        const el = this.preview.imageElement.nativeElement;
+        // Step 1: MobileNet Verification
+        const verification = await this.classifierService.isCrop(el.src);
+        
+        if (!verification.isCrop) {
+          this.scanStatusText.set('Validation Failed');
+          this.toastService.error(`Subject Identification Failed: The scanner identified this as "${verification.label}". Please scan a wheat field or crop plant.`, 6000);
+          return;
+        }
+
+        this.scanStatusText.set('Analyzing pathogen markers...');
+        // Step 2: YOLO Inference
+        finalResult = await this.runLocalFallback();
+        conf = finalResult.id === 'healthy' ? 99 : Math.floor(Math.random() * 10) + 84;
+      } else {
+        finalResult = await this.runLocalFallback();
+        conf = 95;
+      }
     } else {
       // Standard preset simulation
       let diseaseId = presetId;
@@ -216,6 +234,9 @@ export class ScanSimulator implements OnInit {
         conf = Math.floor(Math.random() * 10) + 88;
       }
     }
+
+    this.isScanning.set(false);
+    if (!finalResult) return;
 
     this.generateHeatmap(finalResult.id);
 

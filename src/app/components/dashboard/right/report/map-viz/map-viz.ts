@@ -170,11 +170,12 @@ const FARM_FIELDS: FarmField[] = [
 ];
 
 import { Icon } from '../../../../../design-system/icon/icon';
+import { NdviMapComponent } from './ndvi-map.component';
 
 @Component({
   selector: 'app-map-viz',
   standalone: true,
-  imports: [CommonModule, FormsModule, Icon],
+  imports: [CommonModule, FormsModule, Icon, NdviMapComponent],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="gis-map-card" id="gis-map-card-wrapper">
@@ -191,138 +192,187 @@ import { Icon } from '../../../../../design-system/icon/icon';
           </div>
         </div>
 
-        <!-- Spectrum Index Tabs -->
-        <div class="flex items-center gap-1 bg-slate-900/90 border border-white/10 p-0.5 rounded-lg" id="spectrum-switcher-tabs">
-          <button 
-            class="spec-btn" 
-            [class.active]="activeSpectrum() === 'ndvi'" 
-            (click)="setSpectrum('ndvi')"
-            title="Normalized Difference Vegetation Index"
-            id="tab-spec-ndvi"
-          >
-            NDVI
-          </button>
-          <button 
-            class="spec-btn" 
-            [class.active]="activeSpectrum() === 'ndre'" 
-            (click)="setSpectrum('ndre')"
-            title="Red-Edge Chlorophyll Index"
-            id="tab-spec-ndre"
-          >
-            NDRE
-          </button>
-          <button 
-            class="spec-btn" 
-            [class.active]="activeSpectrum() === 'moisture'" 
-            (click)="setSpectrum('moisture')"
-            title="Canopy Water Stress Index"
-            id="tab-spec-moisture"
-          >
-            Water
-          </button>
-          <button 
-            class="spec-btn" 
-            [class.active]="activeSpectrum() === 'disease'" 
-            (click)="setSpectrum('disease')"
-            title="Pathogen Infection Risk Map"
-            id="tab-spec-disease"
-          >
-            Risk
-          </button>
-        </div>
-      </div>
-
-      <!-- District Quick Filter Chips -->
-      <div class="flex items-center justify-between gap-1 mb-2 overflow-x-auto pb-0.5" id="district-filter-chips">
-        <div class="flex items-center gap-1">
-          <button 
-            class="dist-chip" 
-            [class.active]="selectedDistrictId() === 'all'" 
-            (click)="filterDistrict('all')"
-            id="chip-district-all"
-          >
-            All Districts
-          </button>
-          @for (d of districts; track d.id) {
+        <div class="flex items-center gap-2">
+          <!-- Map Mode Switcher -->
+          <div class="flex items-center gap-1 bg-slate-900/90 border border-white/10 p-0.5 rounded-lg mr-1" id="map-mode-tabs">
             <button 
-              class="dist-chip" 
-              [class.active]="selectedDistrictId() === d.id" 
-              (click)="filterDistrict(d.id)"
-              id="chip-district-{{ d.id }}"
+              class="spec-btn" 
+              [class.active]="mapViewMode() === 'fields'" 
+              (click)="setViewMode('fields')"
+              title="Show Interactive Farm Plots Map"
+              id="tab-mode-fields"
             >
-              {{ d.name }}
+              Field Plots
             </button>
+            <button 
+              class="spec-btn" 
+              [class.active]="mapViewMode() === 'geotiff'" 
+              (click)="setViewMode('geotiff')"
+              title="Show Regional Cloud-Optimized GeoTIFF NDVI Raster Map"
+              id="tab-mode-geotiff"
+            >
+              NDVI Raster
+            </button>
+          </div>
+
+          <!-- Spectrum Index Tabs -->
+          @if (mapViewMode() === 'fields') {
+            <div class="flex items-center gap-1 bg-slate-900/90 border border-white/10 p-0.5 rounded-lg" id="spectrum-switcher-tabs">
+              <button 
+                class="spec-btn" 
+                [class.active]="activeSpectrum() === 'ndvi'" 
+                (click)="setSpectrum('ndvi')"
+                title="Normalized Difference Vegetation Index"
+                id="tab-spec-ndvi"
+              >
+                NDVI
+              </button>
+              <button 
+                class="spec-btn" 
+                [class.active]="activeSpectrum() === 'ndre'" 
+                (click)="setSpectrum('ndre')"
+                title="Red-Edge Chlorophyll Index"
+                id="tab-spec-ndre"
+              >
+                NDRE
+              </button>
+              <button 
+                class="spec-btn" 
+                [class.active]="activeSpectrum() === 'moisture'" 
+                (click)="setSpectrum('moisture')"
+                title="Canopy Water Stress Index"
+                id="tab-spec-moisture"
+              >
+                Water
+              </button>
+              <button 
+                class="spec-btn" 
+                [class.active]="activeSpectrum() === 'disease'" 
+                (click)="setSpectrum('disease')"
+                title="Pathogen Infection Risk Map"
+                id="tab-spec-disease"
+              >
+                Risk
+              </button>
+            </div>
           }
         </div>
-
-        <!-- Stressed Filter Toggle -->
-        <button 
-          class="alert-filter-btn flex items-center gap-1 flex-shrink-0" 
-          [class.active]="onlyAlerts()" 
-          (click)="toggleOnlyAlerts()"
-          id="btn-toggle-only-alerts"
-        >
-          <span class="w-2 h-2 rounded-full" [class.bg-rose-500]="onlyAlerts()" [class.bg-zinc-500]="!onlyAlerts()"></span>
-          <span>Alert Plots Only</span>
-        </button>
       </div>
+
+      <!-- District Quick Filter Chips / Info bar -->
+      @if (mapViewMode() === 'fields') {
+        <div class="flex items-center justify-between gap-1 mb-2 overflow-x-auto pb-0.5" id="district-filter-chips">
+          <div class="flex items-center gap-1">
+            <button 
+              class="dist-chip" 
+              [class.active]="selectedDistrictId() === 'all'" 
+              (click)="filterDistrict('all')"
+              id="chip-district-all"
+            >
+              All Districts
+            </button>
+            @for (d of districts; track d.id) {
+              <button 
+                class="dist-chip" 
+                [class.active]="selectedDistrictId() === d.id" 
+                (click)="filterDistrict(d.id)"
+                id="chip-district-{{ d.id }}"
+              >
+                {{ d.name }}
+              </button>
+            }
+          </div>
+
+          <!-- Stressed Filter Toggle -->
+          <button 
+            class="alert-filter-btn flex items-center gap-1 flex-shrink-0" 
+            [class.active]="onlyAlerts()" 
+            (click)="toggleOnlyAlerts()"
+            id="btn-toggle-only-alerts"
+          >
+            <span class="w-2 h-2 rounded-full" [class.bg-rose-500]="onlyAlerts()" [class.bg-zinc-500]="!onlyAlerts()"></span>
+            <span>Alert Plots Only</span>
+          </button>
+        </div>
+      } @else {
+        <div class="flex items-center justify-between gap-1 mb-2 text-[10px] text-zinc-400 py-1 px-2 bg-slate-900/40 border border-white/5 rounded-lg" id="geotiff-info-bar">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Regional Cloud-Optimized GeoTIFF (Southern BC Wheat Basin)</span>
+          </div>
+          <span class="font-mono text-[9px] text-zinc-500">HTTP Range Requests Enabled</span>
+        </div>
+      }
 
       <!-- MAP CONTAINER (300px height for rich visualization) -->
       <div class="map-viewport relative bg-slate-950 border border-white/10 rounded-lg overflow-hidden mb-2" id="map-viewport-container">
         
-        <!-- Satellite / Basemap Switcher Floating Overlay -->
-        <div class="absolute top-2 right-2 z-20 flex items-center gap-1 bg-slate-900/90 backdrop-blur border border-white/10 rounded p-1 text-[10px]" id="map-basemap-toggle-box">
-          <button 
-            class="map-sub-btn" 
-            [class.active]="basemap() === 'satellite'" 
-            (click)="setBasemap('satellite')"
-            id="btn-bm-satellite"
-          >
-            Satellite
-          </button>
-          <button 
-            class="map-sub-btn" 
-            [class.active]="basemap() === 'street'" 
-            (click)="setBasemap('street')"
-            id="btn-bm-street"
-          >
-            Terrain
-          </button>
-          <button 
-            class="map-sub-btn" 
-            [class.active]="basemap() === 'dark'" 
-            (click)="setBasemap('dark')"
-            id="btn-bm-dark"
-          >
-            GIS Dark
-          </button>
-        </div>
-
-        <!-- Reset Zoom Button -->
-        @if (selectedField()) {
-          <div class="absolute top-2 left-2 z-20" id="reset-field-zoom-box">
-            <button class="reset-chip flex items-center gap-1 text-[10px]" (click)="resetFieldSelection()" id="btn-reset-field-selection">
-              <app-icon size="xs">arrow_back</app-icon>
-              <span>Fit Overview</span>
+        @if (mapViewMode() === 'fields') {
+          <!-- Satellite / Basemap Switcher Floating Overlay -->
+          <div class="absolute top-2 right-2 z-20 flex items-center gap-1 bg-slate-900/90 backdrop-blur border border-white/10 rounded p-1 text-[10px]" id="map-basemap-toggle-box">
+            <button 
+              class="map-sub-btn" 
+              [class.active]="basemap() === 'satellite'" 
+              (click)="setBasemap('satellite')"
+              id="btn-bm-satellite"
+            >
+              Satellite
+            </button>
+            <button 
+              class="map-sub-btn" 
+              [class.active]="basemap() === 'street'" 
+              (click)="setBasemap('street')"
+              id="btn-bm-street"
+            >
+              Terrain
+            </button>
+            <button 
+              class="map-sub-btn" 
+              [class.active]="basemap() === 'dark'" 
+              (click)="setBasemap('dark')"
+              id="btn-bm-dark"
+            >
+              GIS Dark
             </button>
           </div>
-        }
 
-        <!-- Leaflet Canvas Element -->
-        <div class="w-full h-[300px] min-h-[280px] relative z-10" id="map-canvas-host">
-          <div #mapContainer class="w-full h-full min-h-[280px] block relative z-10" id="leaflet-map-element-box"></div>
-        </div>
+          <!-- Reset Zoom Button -->
+          @if (selectedField()) {
+            <div class="absolute top-2 left-2 z-20" id="reset-field-zoom-box">
+              <button class="reset-chip flex items-center gap-1 text-[10px]" (click)="resetFieldSelection()" id="btn-reset-field-selection">
+                <app-icon size="xs">arrow_back</app-icon>
+                <span>Fit Overview</span>
+              </button>
+            </div>
+          }
+
+          <!-- Leaflet Canvas Element -->
+          <div class="w-full h-[300px] min-h-[280px] relative z-10" id="map-canvas-host">
+            <div #mapContainer class="w-full h-full min-h-[280px] block relative z-10" id="leaflet-map-element-box"></div>
+          </div>
+        } @else {
+          <!-- Regional NDVI Cloud-Optimized GeoTIFF Map -->
+          <div class="w-full h-[300px] min-h-[280px] relative z-10" id="ndvi-geotiff-host">
+            <app-ndvi-map></app-ndvi-map>
+          </div>
+        }
 
         <!-- Legend Ribbon -->
         <div class="map-legend-ribbon px-2 py-1.5 bg-slate-950/95 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-zinc-400 z-20" id="map-legend-ribbon">
           <div class="flex items-center gap-1.5">
             <span class="text-zinc-500">Active Spectrum Overlay:</span>
-            <span class="text-emerald-400 font-bold uppercase">{{ activeSpectrum() }}</span>
+            <span class="text-emerald-400 font-bold uppercase">{{ mapViewMode() === 'geotiff' ? 'NDVI COG Raster' : activeSpectrum() }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Optimal (&ge;0.70)</span>
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Warning (0.50-0.69)</span>
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> High Risk (&lt;0.50)</span>
+            @if (mapViewMode() === 'geotiff') {
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #006837"></span> High Vigor (&ge;0.70)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #78c679"></span> Moderate (0.40-0.69)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #ffffe5; border: 1px solid rgba(255,255,255,0.2)"></span> Low/Soil (&lt;0.40)</span>
+            } @else {
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Optimal (&ge;0.70)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Warning (0.50-0.69)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> High Risk (&lt;0.50)</span>
+            }
           </div>
         </div>
       </div>
@@ -600,6 +650,7 @@ export class MapViz implements AfterViewInit, OnDestroy {
   readonly selectedField = signal<FarmField | null>(null);
   readonly onlyAlerts = signal<boolean>(false);
   readonly basemap = signal<'satellite' | 'street' | 'dark'>('satellite');
+  readonly mapViewMode = signal<'fields' | 'geotiff'>('fields');
 
   // Filtered active fields
   readonly activeFields = computed(() => {
@@ -713,6 +764,29 @@ export class MapViz implements AfterViewInit, OnDestroy {
   setBasemap(mode: 'satellite' | 'street' | 'dark') {
     this.basemap.set(mode);
     this.applyBasemap(mode);
+  }
+
+  setViewMode(mode: 'fields' | 'geotiff') {
+    if (this.mapViewMode() === mode) return;
+
+    if (mode === 'geotiff') {
+      this.resizeObserver?.disconnect();
+      if (this.map) {
+        this.map.off();
+        this.map.remove();
+        this.map = null;
+      }
+    }
+
+    this.mapViewMode.set(mode);
+
+    if (mode === 'fields') {
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => {
+          this.initMap();
+        }, 50);
+      });
+    }
   }
 
   setSpectrum(spectrum: 'ndvi' | 'ndre' | 'moisture' | 'disease') {

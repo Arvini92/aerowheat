@@ -55,7 +55,7 @@ export class RagService {
       if (hasWebGPU) {
         this.featureExtractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
           device: 'webgpu'
-        }).catch(async (err) => {
+        }).catch(async () => {
           // Silently fall back to CPU/WASM if WebGPU fails
           console.log('WebGPU not available, using CPU/WASM backend for feature extraction');
           return await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
@@ -65,7 +65,7 @@ export class RagService {
         console.log('WebGPU not supported in this browser, using CPU/WASM backend');
         this.featureExtractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2') as FeatureExtractionPipeline;
       }
-    } catch (err) {
+    } catch {
       console.log('RAG engine using fallback search (keyword-based matching)');
       this.initPromise = null;
     }
@@ -100,7 +100,7 @@ export class RagService {
           }))
           .filter((item): item is RagSearchResult => Boolean(item.metadata));
       }
-    } catch (err) {
+    } catch {
       console.log('Using keyword-based search as fallback');
     }
 
@@ -203,7 +203,7 @@ export class RagService {
           return buf;
         }
         // If cached file is corrupted, remove it
-        await root.removeEntry(fileName).catch(() => {});
+        await root.removeEntry(fileName).catch(() => void 0);
       } catch {
         // Not cached yet
       }

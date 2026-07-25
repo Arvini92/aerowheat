@@ -413,7 +413,7 @@ export class TrendChart implements AfterViewInit, OnDestroy {
     g.append('g').attr('class', 'chart-grid-line').call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(() => ''));
 
     // Axes
-    g.append('g').attr('class', 'trend-axis').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x).ticks(5).tickFormat(d3.timeFormat('%d %b') as any));
+    g.append('g').attr('class', 'trend-axis').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x).ticks(5).tickFormat((d) => d3.timeFormat('%d %b')(d as Date)));
     g.append('g').attr('class', 'trend-axis').call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.2f')));
 
     // Path generators
