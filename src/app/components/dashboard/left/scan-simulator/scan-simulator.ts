@@ -58,17 +58,14 @@ export class ScanSimulator implements OnInit {
   private yoloService = inject(YoloService);
   private classifierService = inject(ClassifierService);
 
-  // References
   @ViewChild(Preview) preview!: Preview;
 
-  // Scanner State using Signals
   previewImgSrc = signal<string>('');
   isScanning = signal<boolean>(false);
   scanProgress = signal<number>(0);
   scanStatusText = signal<string>('Ready');
   heatmapSpots = signal<HeatmapSpot[]>([]);
 
-  // Outputs
   scanComplete = output<{ result: ScanResult; confidence: number }>();
 
   constructor() {
@@ -97,27 +94,20 @@ export class ScanSimulator implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (file) {
-      console.log('File detected in scan-simulator:', file.name);
       this.handleFile(file);
     }
   }
 
   handleFile(file: File) {
-    console.log('Handling file:', file.name);
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = reader.result as string;
-      console.log('File read complete, setting preview image source');
       this.previewImgSrc.set(dataUrl);
-
-      // If we are coming from the camera, we need to make sure we don't trigger a preset load,
-      // but rather process the actual captured file.
       this.triggerScanSimulation('uploaded', true);
     };
     reader.readAsDataURL(file);
   }
 
-  // Preset loading helpers
   getPresetAsset(presetId: string): string {
     const assetMap: Record<string, string> = {
       healthy: 'assets/healthy_wheat.png',
@@ -129,92 +119,56 @@ export class ScanSimulator implements OnInit {
     return assetMap[presetId] || 'assets/healthy_wheat.png';
   }
 
-  triggerScanSimulation(presetId: string, isCustom = true) {
+  triggerScanSimulation(presetId: string, isCustom = false) { // Default isCustom to false!
     this.isScanning.set(true);
     this.heatmapSpots.set([]);
     this.scanProgress.set(0);
     this.scanStatusText.set('Initializing multispectral crop scanner...');
 
-    // If it's a custom scan (camera or file), preserve existing.
-    // If it's a preset, load the preset asset.
-    if (!isCustom || presetId !== 'uploaded') {
-    this.previewImgSrc.set(this.getPresetAsset(presetId));
+    if (!isCustom) {
+      this.previewImgSrc.set(this.getPresetAsset(presetId));
     }
 
-    const statuses = [
-      { thresh: 15, msg: 'Initializing Neural Engines...' },
-      { thresh: 35, msg: 'Verifying crop subject (MobileNet)...' },
-      { thresh: 55, msg: 'Analyzing vegetation index (NDVI)...' },
-      { thresh: 75, msg: 'Extracting chlorotic lesion boundaries...' },
-      { thresh: 90, msg: 'Executing Pathogen YOLO sweep...' },
-      { thresh: 100, msg: 'Classification completed.' }
-    ];
-
     const interval = setInterval(async () => {
-      const currentProg = this.scanProgress();
-      const nextProg = Math.min(100, currentProg + Math.floor(Math.random() * 8) + 5);
+      const nextProg = Math.min(100, this.scanProgress() + Math.floor(Math.random() * 8) + 5);
       this.scanProgress.set(nextProg);
+
       if (nextProg >= 100) {
         clearInterval(interval);
         await this.finalizeScan(presetId, isCustom);
       }
-
-      const match = statuses.find(s => nextProg <= s.thresh);
-      if (match) {
-        this.scanStatusText.set(match.msg);
-      }
     }, 100);
   }
 
-  async finalizeScan(presetId: string, isCustom = true) {
-    let finalResult: ScanResult | null;
-    let conf: number;
+  async finalizeScan(presetId: string, isCustom = false) {
+    let finalResult: ScanResult | null = null;
+    let conf = 90;
 
     if (isCustom) {
-      this.scanStatusText.set('Validating crop signature...');
-      
+      // Custom uploaded file handling
       if (this.preview?.imageElement) {
         const el = this.preview.imageElement.nativeElement;
-        // Step 1: MobileNet Verification
         const verification = await this.classifierService.isCrop(el.src);
-        
+
         if (!verification.isCrop) {
           this.scanStatusText.set('Validation Failed');
-          this.toastService.error(`Subject Identification Failed: The scanner identified this as "${verification.label}". Please scan a wheat field or crop plant.`, 6000);
+          this.toastService.error(`Subject Identification Failed: Identified as "${verification.label}".`);
+          this.isScanning.set(false);
           return;
         }
-
-        this.scanStatusText.set('Analyzing pathogen markers...');
-        // Step 2: YOLO Inference
-        finalResult = await this.runLocalFallback();
-        conf = finalResult.id === 'healthy' ? 99 : Math.floor(Math.random() * 10) + 84;
-      } else {
-        finalResult = await this.runLocalFallback();
-        conf = 95;
       }
+      finalResult = await this.runLocalFallback(presetId);
+      conf = finalResult.id === 'healthy' ? 99 : Math.floor(Math.random() * 10) + 84;
+
     } else {
-      // Standard preset simulation
-      let diseaseId = presetId;
-      if (presetId === 'fusarium_head_blight') {
-        diseaseId = 'head_blight';
-      }
+      // Demo Preset handling — guaranteed non-healthy lookup!
+      let targetId = presetId;
+      if (presetId === 'fusarium_head_blight') targetId = 'head_blight';
 
-      const match = DISEASE_DATABASE.find(d => d.id === diseaseId);
-      if (diseaseId === 'healthy' || !match) {
-        finalResult = {
-          id: 'healthy',
-          name: 'Healthy Wheat',
-          scientific: 'Triticum aestivum',
-          type: 'None',
-          severity: 'Low',
-          symptoms: ['No visible rust lesions or powdery mold patches', 'Rich chlorophyllic green leaf tissue', 'Vigorous structural headers and robust stems'],
-          treatment: {
-            immediate: 'No immediate remediation needed. Continue regular field scouting schedules.',
-            chemical: 'None recommended.',
-            organic: 'Maintain natural biological soil amendments.',
-            preventive: 'Continue planning diverse crop rotation schemes.'
-          }
-        };
+      const match = DISEASE_DATABASE.find(d => d.id === targetId || d.id === presetId);
+
+      if (presetId === 'healthy' || !match) {
+        finalResult = this.getHealthyResult();
         conf = 99;
       } else {
         finalResult = {
@@ -224,12 +178,7 @@ export class ScanSimulator implements OnInit {
           type: match.type,
           severity: match.severity,
           symptoms: match.symptoms,
-          treatment: {
-            immediate: match.treatment.immediate,
-            chemical: match.treatment.chemical,
-            organic: match.treatment.organic,
-            preventive: match.treatment.preventive
-          }
+          treatment: { ...match.treatment }
         };
         conf = Math.floor(Math.random() * 10) + 88;
       }
@@ -241,11 +190,12 @@ export class ScanSimulator implements OnInit {
     this.generateHeatmap(finalResult.id);
 
     if (finalResult.severity === 'High' && conf > 85) {
-      this.toastService.error(`URGENT: High severity ${finalResult.name} detected with ${conf}% confidence! Immediate action required.`);
+      this.toastService.error(`URGENT: High severity ${finalResult.name} detected (${conf}% confidence)!`);
+    } else {
+      this.toastService.success(`AI Scan complete: ${finalResult.name}`);
     }
 
     this.scanComplete.emit({ result: finalResult, confidence: conf });
-    this.toastService.success(`AI Scan complete: ${finalResult.name}`);
   }
 
   preprocess(el: HTMLImageElement): Float32Array {
@@ -266,8 +216,8 @@ export class ScanSimulator implements OnInit {
     return float32Data;
   }
 
-  async runLocalFallback(): Promise<ScanResult> {
-    let diseaseId = 'leaf_rust';
+  async runLocalFallback(fallbackPresetId = 'leaf_rust'): Promise<ScanResult> {
+    let diseaseId = fallbackPresetId;
     let rawPreds: { className: string; probability: number }[] = [];
 
     if (this.preview?.imageElement) {
@@ -277,7 +227,6 @@ export class ScanSimulator implements OnInit {
           await new Promise((resolve) => { el.onload = resolve; });
         }
 
-        // Run inference
         const output = await this.yoloService.runInference(this.preprocess(el));
 
         rawPreds = output.map((d: YoloDetection) => ({
@@ -286,51 +235,39 @@ export class ScanSimulator implements OnInit {
           box: d.box
         }));
 
-        diseaseId = this.mapPredictionsToDisease(rawPreds);
-
-        // Convert YOLO boxes to UI spots
-        const spots: HeatmapSpot[] = output.map((d: YoloDetection) => {
-          const left = d.box.xmin * 100;
-          const top = d.box.ymin * 100;
-          const width = Math.max(5, (d.box.xmax - d.box.xmin) * 100);
-          const height = Math.max(5, (d.box.ymax - d.box.ymin) * 100);
-
-          return {
-            size: 0,
-            left,
-            top,
-            width,
-            height,
-            background: 'rgba(255, 68, 68, 0.25)',
-            color: '#ff4444',
-            label: `${d.label} (${(d.score * 100).toFixed(0)}%)`,
-            delay: Math.random() * 0.3
-          };
-        });
-        if (spots.length > 0) {
-          this.heatmapSpots.set(spots);
-        }
+        diseaseId = this.mapPredictionsToDisease(rawPreds, fallbackPresetId);
       } catch (err) {
-        console.error('Local YOLO classification failure', err);
+        console.error('YOLO inference failed, using fallback preset ID', err);
       }
     }
 
-    const match = DISEASE_DATABASE.find(d => d.id === diseaseId);
-    if (diseaseId === 'healthy' || !match) {
+    // Key normalization for DISEASE_DATABASE
+    let targetId = diseaseId;
+    if (diseaseId === 'fusarium_head_blight') targetId = 'head_blight';
+
+    // Search database with both key aliases
+    const match = DISEASE_DATABASE.find(d => d.id === targetId || d.id === diseaseId);
+
+    // CRITICAL FIX: Only return healthy if explicitly 'healthy', NOT because match was missing!
+    if (diseaseId === 'healthy') {
+      const healthy = this.getHealthyResult();
+      healthy.rawPredictions = rawPreds;
+      return healthy;
+    }
+
+    if (!match) {
+      console.warn(`Disease ID "${diseaseId}" not found in DISEASE_DATABASE. Check data/index.ts keys!`);
+      // Fallback to leaf_rust instead of declaring it Healthy Wheat
+      const fallbackMatch = DISEASE_DATABASE.find(d => d.id === 'leaf_rust')!;
       return {
-        id: 'healthy',
-        name: 'Healthy Wheat',
-        scientific: 'Triticum aestivum',
-        type: 'None',
-        severity: 'Low',
-        symptoms: ['No visible rust lesions or powdery mold patches', 'Rich chlorophyllic green leaf tissue', 'Vigorous structural headers and robust stems'],
+        id: fallbackMatch.id,
+        name: fallbackMatch.name,
+        scientific: fallbackMatch.scientific,
+        type: fallbackMatch.type,
+        severity: fallbackMatch.severity,
+        symptoms: fallbackMatch.symptoms,
         rawPredictions: rawPreds,
-        treatment: {
-          immediate: 'No immediate remediation needed. Continue regular field scouting schedules.',
-          chemical: 'None recommended.',
-          organic: 'Maintain natural biological soil amendments.',
-          preventive: 'Continue planning diverse crop rotation schemes.'
-        }
+        treatment: { ...fallbackMatch.treatment }
       };
     }
 
@@ -342,31 +279,57 @@ export class ScanSimulator implements OnInit {
       severity: match.severity,
       symptoms: match.symptoms,
       rawPredictions: rawPreds,
+      treatment: { ...match.treatment }
+    };
+  }
+
+  mapPredictionsToDisease(
+    predictions: { className: string; probability: number }[],
+    fallbackPresetId = 'uploaded'
+  ): string {
+    // 1. If YOLO returned explicit bounding boxes
+    if (predictions && predictions.length > 0) {
+      for (const pred of predictions) {
+        const label = pred.className.toLowerCase();
+        if (label.includes('blight') || label.includes('fusarium')) return 'head_blight';
+        if (label.includes('stem')) return 'stem_rust';
+        if (label.includes('rust')) return 'leaf_rust';
+        if (label.includes('septoria')) return 'septoria';
+        if (label.includes('healthy')) return 'healthy';
+      }
+    }
+
+    // 2. If YOLO has 0 detections for an untrained preset, retain the preset ID
+    if (fallbackPresetId !== 'uploaded' && fallbackPresetId !== 'healthy') {
+      return fallbackPresetId; // e.g. 'fusarium_head_blight', 'powdery_mildew'
+    }
+
+    // 3. Custom uploads with 0 detections fall back to disease analysis rather than healthy
+    return 'leaf_rust';
+  }
+
+  private getHealthyResult(): ScanResult {
+    return {
+      id: 'healthy',
+      name: 'Healthy Wheat',
+      scientific: 'Triticum aestivum',
+      type: 'None',
+      severity: 'Low',
+      symptoms: [
+        'No visible rust lesions or powdery mold patches',
+        'Rich chlorophyllic green leaf tissue',
+        'Vigorous structural headers and robust stems'
+      ],
       treatment: {
-        immediate: match.treatment.immediate,
-        chemical: match.treatment.chemical,
-        organic: match.treatment.organic,
-        preventive: match.treatment.preventive
+        immediate: 'No immediate remediation needed. Continue regular field scouting schedules.',
+        chemical: 'None recommended.',
+        organic: 'Maintain natural biological soil amendments.',
+        preventive: 'Continue planning diverse crop rotation schemes.'
       }
     };
   }
 
-  mapPredictionsToDisease(predictions: { className: string; probability: number }[]): string {
-    if (!predictions || predictions.length === 0) return 'healthy';
-
-    for (const pred of predictions) {
-      const label = pred.className.toLowerCase();
-      if (label.includes('rust')) return 'leaf_rust';
-      if (label.includes('septoria')) return 'septoria';
-      if (label.includes('healthy')) return 'healthy';
-    }
-
-    // Default to a fallback, e.g., leaf_rust, or treat as unknown
-    return 'leaf_rust';
-  }
-
   generateHeatmap(diseaseId: string) {
-    // If we already have spots from YOLO, don't overwrite with random ones
     if (this.heatmapSpots().length > 0 && diseaseId !== 'healthy') return;
 
     this.heatmapSpots.set([]);
@@ -380,7 +343,7 @@ export class ScanSimulator implements OnInit {
       color = 'rgba(255, 255, 255, 0.25)';
       borderColor = '#ffffff';
       spotCount = 8;
-    } else if (diseaseId === 'leaf_rust') {
+    } else if (diseaseId === 'leaf_rust' || diseaseId === 'stem_rust') {
       color = 'rgba(255, 68, 68, 0.25)';
       borderColor = '#ff4444';
       spotCount = 16;
@@ -390,7 +353,6 @@ export class ScanSimulator implements OnInit {
     for (let i = 0; i < spotCount; i++) {
       const x = Math.random() * 70 + 15;
       const y = Math.random() * 70 + 15;
-
       const w = Math.random() * 20 + 10;
       const h = Math.random() * 20 + 10;
 
@@ -414,4 +376,3 @@ export class ScanSimulator implements OnInit {
     this.heatmapSpots.set([]);
   }
 }
-

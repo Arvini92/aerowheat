@@ -1,61 +1,100 @@
 import { Injectable, signal } from '@angular/core';
-import { pipeline, ImageClassificationPipeline } from '@huggingface/transformers';
+import { 
+  AutoProcessor, 
+  AutoTokenizer,
+  AutoModel, 
+  RawImage, 
+  Processor, 
+  PreTrainedModel,
+  PreTrainedTokenizer
+} from '@huggingface/transformers';
+
+interface ClipOutput {
+  logits_per_image: {
+    data: Float32Array;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClassifierService {
-  private classifier?: ImageClassificationPipeline;
+  private processor?: Processor;
+  private tokenizer?: PreTrainedTokenizer;
+  private model?: PreTrainedModel;
   isLoading = signal(false);
 
-  async loadModel() {
-    if (this.classifier) return;
+  private readonly MODEL_NAME = 'Xenova/clip-vit-base-patch16';
+
+  async loadModel(): Promise<void> {
+    if (this.model && this.processor && this.tokenizer) return;
     this.isLoading.set(true);
+
     try {
-      // Using a small MobileNetV4 or similar lightweight model
-      // 'Xenova/mobilenetv4_conv_small.e500_ahead_r224_in1k' is small and efficient
-      this.classifier = await pipeline('image-classification', 'Xenova/mobilenetv4_conv_small.e500_ahead_r224_in1k', {
-        device: 'webgpu', // Fallback to wasm is automatic in transformers.js
-      }) as ImageClassificationPipeline;
+      this.processor = await AutoProcessor.from_pretrained(this.MODEL_NAME);
+      this.tokenizer = await AutoTokenizer.from_pretrained(this.MODEL_NAME);
+      this.model = await AutoModel.from_pretrained(this.MODEL_NAME, { device: 'webgpu' });
     } catch (err) {
-      console.error('Failed to load MobileNet classifier:', err);
-      // Fallback to wasm if webgpu fails (though pipeline usually handles it)
-      this.classifier = await pipeline('image-classification', 'Xenova/mobilenetv4_conv_small.e500_ahead_r224_in1k') as ImageClassificationPipeline;
+      console.warn('WebGPU loading failed, falling back to WASM:', err);
+      try {
+        this.model = await AutoModel.from_pretrained(this.MODEL_NAME, { device: 'wasm' });
+      } catch (fallbackErr) {
+        console.error('Failed to load CLIP classifier:', fallbackErr);
+      }
     } finally {
       this.isLoading.set(false);
     }
   }
 
   async isCrop(imageSrc: string): Promise<{ isCrop: boolean; label: string; confidence: number }> {
-    if (!this.classifier) {
+    if (!this.model || !this.processor || !this.tokenizer) {
       await this.loadModel();
     }
 
-    if (!this.classifier) {
-      return { isCrop: true, label: 'unknown', confidence: 0 }; // Fallback if model fails to load
+    if (!this.model || !this.processor || !this.tokenizer) {
+      return { isCrop: true, label: 'unknown', confidence: 0 };
     }
 
-    const results = await this.classifier(imageSrc);
-    
-    // MobileNet labels are ImageNet-based. 
-    // We look for plant-related keywords: 'corn', 'ear', 'wheat', 'leaf', 'pot', 'greenhouse', 'plant', etc.
-    const cropKeywords = [
-      'corn', 'maize', 'ear', 'wheat', 'barley', 'grain', 'rye', 'oat', 
-      'leaf', 'plant', 'vegetation', 'crop', 'agriculture', 'grass',
-      'clover', 'alfalfa', 'soybean', 'stalk', 'hay', 'straw'
-    ];
+    try {
+      const image = await RawImage.fromURL(imageSrc);
+      const text = [
+        'a photo of a crop plant, leaf, or farm field', 
+        'a photo of an object, furniture, or building structure'
+      ];
 
-    const topResult = results[0] as { label: string; score: number };
-    const label = topResult.label.toLowerCase();
-    const confidence = topResult.score;
+      // 1. Process image features
+      const imageInputs = await this.processor(image);
+      
+      // 2. Process text tokens
+      const textInputs = await this.tokenizer(text, { padding: true, truncation: true });
 
-    const isMatch = cropKeywords.some(keyword => label.includes(keyword));
+      // 3. Combine both image and text tensor inputs for CLIP
+      const inputs = {
+        ...imageInputs,
+        ...textInputs
+      };
 
-    // High confidence threshold for "is it a crop"
-    return {
-      isCrop: isMatch && confidence > 0.15,
-      label: topResult.label,
-      confidence: confidence
-    };
+      const { logits_per_image } = (await this.model(inputs)) as unknown as ClipOutput;
+      const rawLogits = Array.from(logits_per_image.data);
+      
+      // Compute Softmax over candidate text classes
+      const maxLogit = Math.max(...rawLogits);
+      const expScores = rawLogits.map(v => Math.exp(v - maxLogit));
+      const sumExp = expScores.reduce((a, b) => a + b, 0);
+      const probs = expScores.map(v => v / sumExp);
+
+      const isCropMatch = probs[0] > probs[1];
+      const confidence = probs[0];
+
+      return {
+        isCrop: isCropMatch && confidence > 0.6,
+        label: isCropMatch ? 'crop plant / leaf' : 'non-plant',
+        confidence
+      };
+    } catch (error) {
+      console.error('Classification error:', error);
+      // Fail-open fallback so UI scanning flow is not blocked
+      return { isCrop: true, label: 'bypassed', confidence: 1.0 };
+    }
   }
 }

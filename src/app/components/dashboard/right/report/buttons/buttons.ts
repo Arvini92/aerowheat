@@ -38,9 +38,5 @@ export class Buttons {
   onResetScanner(): void {
     this.resetScanner.emit();
   }
-
-  onPrintReport(): void {
-    window.print();
-  }
 }
 

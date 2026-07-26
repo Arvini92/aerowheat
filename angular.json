@@ -24,11 +24,6 @@
             "inlineStyleLanguage": "scss",
             "polyfills": [],
             "tsConfig": "tsconfig.app.json",
-            "externalDependencies": [
-              "@google/genai",
-              "onnxruntime-web",
-              "onnxruntime-node"
-            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -39,8 +34,8 @@
                 "input": "."
               },
               {
-                "glob": "*",
-                "input": "./node_modules/onnxruntime-web/dist",
+                "glob": "**/*",
+                "input": "node_modules/onnxruntime-web/dist/",
                 "output": "assets/wasm/"
               }
             ],

@@ -5,7 +5,10 @@ import { ScanSimulator, ScanResult } from './scan-simulator/scan-simulator';
 @Component({
   selector: 'app-left',
   standalone: true,
-  imports: [GlassCard, ScanSimulator],
+  imports: [
+    GlassCard,
+    ScanSimulator
+  ],
   templateUrl: './left.html',
   styleUrl: './left.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

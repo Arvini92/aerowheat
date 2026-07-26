@@ -12,7 +12,7 @@ import * as L from 'leaflet';
       @if (loading()) {
         <div class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm" id="ndvi-loading">
           <div class="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-3"></div>
-          <p class="text-xs text-zinc-400 font-mono">Initializing NDVI Raster Layers...</p>
+          <p class="text-xs text-zinc-400 font-mono">Streaming Cloud-Optimized GeoTIFF...</p>
         </div>
       }
 
@@ -49,7 +49,10 @@ export class NdviMapComponent implements OnInit, OnDestroy {
   @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef<HTMLDivElement>;
 
   private map: L.Map | null = null;
-  private canvasLayer: L.GridLayer | null = null;
+  private geoRasterLayer: any = null;
+  private geoRasterData: any = null;
+  private proj4Instance: any = null;
+  private hoverRafId: number | null = null;
 
   readonly loading = signal<boolean>(true);
   readonly hoverData = signal<{ lat: number; lng: number; val: number; color: string; status: string } | null>(null);
@@ -57,226 +60,128 @@ export class NdviMapComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.ngZone.runOutsideAngular(() => {
-        setTimeout(() => {
-          this.initNdviMap();
-        }, 100);
+        setTimeout(() => this.initNdviMap(), 100);
       });
     }
   }
 
-  private initNdviMap(): void {
+  private async initNdviMap(): Promise<void> {
     const container = this.mapContainer.nativeElement;
     
-    // Centered around Southern BC Wheat Basin (same coordinates as standard map)
-    const centerLat = 49.15;
-    const centerLng = -122.05;
-
     this.map = L.map(container, {
-      center: [centerLat, centerLng],
-      zoom: 12,
       zoomControl: false,
       attributionControl: false,
       maxZoom: 16,
-      minZoom: 10
+      minZoom: 8,
+      preferCanvas: true
     });
 
-    // Add high-contrast dark GIS basemap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 20
+      maxZoom: 20,
+      updateWhenIdle: true
     }).addTo(this.map);
 
-    // Add standard zoom control at top-right
     L.control.zoom({ position: 'topright' }).addTo(this.map);
 
-    // Render detailed custom NDVI Grid Layer on a Canvas
-    this.createNdviCanvasLayer();
+    await this.loadRealGeoTiff();
 
-    // Register interactive mouse/move handlers to inspect raster values
-    this.map.on('mousemove', (e: L.LeafletMouseEvent) => {
-      this.ngZone.run(() => {
-        this.inspectNdviValue(e.latlng.lat, e.latlng.lng);
-      });
-    });
-
-    this.map.on('mouseout', () => {
-      this.ngZone.run(() => {
-        this.hoverData.set(null);
-      });
-    });
-
-    // Set loading finished
-    this.ngZone.run(() => {
-      this.loading.set(false);
-    });
+    this.map.on('mousemove', this.onMouseMove);
+    this.map.on('mouseout', this.onMouseOut);
   }
 
-  private createNdviCanvasLayer(): void {
+  private async loadRealGeoTiff(): Promise<void> {
     if (!this.map) return;
 
-    const NdviCanvasClass = L.GridLayer.extend({
-      createTile: (coords: L.Coords) => {
-        const tile = document.createElement('canvas');
-        const size = 256;
-        tile.width = size;
-        tile.height = size;
+    try {
+      this.proj4Instance = (await import('proj4')).default;
+      if (!(window as any).proj4) {
+        (window as any).proj4 = this.proj4Instance;
+      }
+      this.proj4Instance.defs(
+        "EPSG:3005", 
+        "+proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
+      );
 
-        const ctx = tile.getContext('2d');
-        if (!ctx) return tile;
+      const parseGeoraster = (await import('georaster')).default;
+      const GeoRasterLayer = (await import('georaster-layer-for-leaflet')).default;
 
-        // Generate synthetic but realistic micro-NDVI noise patterns based on coordinates
-        // This simulates actual crop vigor variance across fields
-        const imgData = ctx.createImageData(size, size);
-        const data = imgData.data;
+      const tiffUrl = 'http://localhost:3000/rasters/bc_ndvi_july2026_full.tif';
 
-        const tileLatMin = this.tile2lat(coords.y, coords.z);
-        const tileLatMax = this.tile2lat(coords.y + 1, coords.z);
-        const tileLngMin = this.tile2lon(coords.x, coords.z);
-        const tileLngMax = this.tile2lon(coords.x + 1, coords.z);
+      const response = await fetch(tiffUrl);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const arrayBuffer = await response.arrayBuffer();
+      this.geoRasterData = await parseGeoraster(arrayBuffer);
 
-        const latDiff = tileLatMax - tileLatMin;
-        const lngDiff = tileLngMax - tileLngMin;
+      this.geoRasterLayer = new GeoRasterLayer({
+        georaster: this.geoRasterData,
+        opacity: 0.85,
+        resolution: 256,
+        pixelValuesToColorFn: (pixelValues: any) => {
+          const ndvi = pixelValues[0];
+          if (ndvi === this.geoRasterData.noDataValue || Number.isNaN(ndvi) || ndvi < -1 || ndvi > 1) {
+            return null; 
+          }
+          return this.ndviToHex(ndvi);
+        }
+      });
 
-        for (let y = 0; y < size; y += 4) {
-          const pixelLat = tileLatMin + (y / size) * latDiff;
-          for (let x = 0; x < size; x += 4) {
-            const pixelLng = tileLngMin + (x / size) * lngDiff;
+      this.geoRasterLayer.addTo(this.map);
+      this.map.fitBounds(this.geoRasterLayer.getBounds());
+      
+      this.ngZone.run(() => this.loading.set(false));
 
-            // Compute realistic multi-frequency noise representing farm land vs soil vs forest
-            const ndviVal = this.getNdviValueAt(pixelLat, pixelLng);
-            const color = this.ndviToRgb(ndviVal);
+    } catch (err) {
+      console.error('Failed to mount COG:', err);
+      this.ngZone.run(() => this.loading.set(false));
+    }
+  }
 
-            // Fill 4x4 block for performance
-            for (let dy = 0; dy < 4; dy++) {
-              if (y + dy >= size) break;
-              for (let dx = 0; dx < 4; dx++) {
-                if (x + dx >= size) break;
-                const idx = ((y + dy) * size + (x + dx)) * 4;
-                data[idx] = color.r;     // R
-                data[idx + 1] = color.g; // G
-                data[idx + 2] = color.b; // B
-                data[idx + 3] = 160;     // Semi-transparent opacity (0.6)
-              }
-            }
+  private onMouseMove = (e: L.LeafletMouseEvent): void => {
+    if (!this.geoRasterData || !this.map || !this.proj4Instance) return;
+    
+    if (this.hoverRafId) cancelAnimationFrame(this.hoverRafId);
+    
+    this.hoverRafId = requestAnimationFrame(() => {
+      try {
+        // Convert Leaflet mouse lat/lng (EPSG:4326) to raster projection (EPSG:3005)
+        const [x, y] = this.proj4Instance("EPSG:4326", "EPSG:3005", [e.latlng.lng, e.latlng.lat]);
+
+        const gr = this.geoRasterData;
+        // Compute column and row indices in the raster grid matrix
+        const col = Math.floor((x - gr.xmin) / gr.pixelWidth);
+        const row = Math.floor((gr.ymax - y) / gr.pixelHeight);
+
+        let val: number | null = null;
+        if (row >= 0 && row < gr.height && col >= 0 && col < gr.width) {
+          const bandValues = gr.values?.[0];
+          if (bandValues && bandValues[row]) {
+            val = bandValues[row][col];
           }
         }
 
-        ctx.putImageData(imgData, 0, 0);
-        return tile;
+        this.ngZone.run(() => {
+          if (val !== null && val !== undefined && !Number.isNaN(val) && val !== gr.noDataValue && val >= -1 && val <= 1) {
+            this.inspectNdviValue(e.latlng.lat, e.latlng.lng, val);
+          } else {
+            this.hoverData.set(null);
+          }
+        });
+      } catch (err) {
+        this.ngZone.run(() => this.hoverData.set(null));
       }
     });
+  };
 
-    this.canvasLayer = new (NdviCanvasClass as new () => L.GridLayer)();
-    if (this.canvasLayer) {
-      this.canvasLayer.addTo(this.map);
+  private onMouseOut = (): void => {
+    if (this.hoverRafId) {
+      cancelAnimationFrame(this.hoverRafId);
+      this.hoverRafId = null;
     }
-  }
+    this.ngZone.run(() => this.hoverData.set(null));
+  };
 
-  private tile2lat(y: number, z: number): number {
-    const n = Math.PI - (2 * Math.PI * y) / Math.pow(2, z);
-    return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
-  }
-
-  private tile2lon(x: number, z: number): number {
-    return (x / Math.pow(2, z)) * 360 - 180;
-  }
-
-  // Pure mathematical functions to calculate extremely realistic NDVI patterns
-  private getNdviValueAt(lat: number, lng: number): number {
-    // Southern BC basin coordinates: ~49.15 Lat, ~-122.05 Lng
-    // Define a realistic bounding region for agriculture
-    const distToCenter = Math.sqrt(Math.pow(lat - 49.15, 2) + Math.pow(lng - (-122.05), 2));
-    
-    // Outside the basin is mostly soil/urban/forest
-    if (distToCenter > 0.15) {
-      // Background NDVI (forest / mountains has ~0.35, urban has ~0.15)
-      const noise = Math.sin(lat * 800) * Math.cos(lng * 800) * 0.1;
-      return Math.max(0.12, 0.3 + noise);
-    }
-
-    // Grid simulation representing farm structures, plots, and access roads
-    const gridX = Math.floor(lng * 300);
-    const gridY = Math.floor(lat * 300);
-    const plotHash = Math.abs(Math.sin(gridX * 12.9898 + gridY * 78.233) * 43758.5453) % 1.0;
-
-    // Simulate farm roads / dividers where NDVI drops below 0.2
-    const insideGridX = (lng * 300) % 1;
-    const insideGridY = (lat * 300) % 1;
-    if (insideGridX < 0.08 || insideGridY < 0.08) {
-      return 0.18 + Math.random() * 0.04; // Soil / Road
-    }
-
-    // Determine Plot Base Health
-    let baseHealth: number;
-    if (plotHash > 0.7) {
-      baseHealth = 0.82;      // Healthy wheat fields (NDVI ~0.8)
-    } else if (plotHash > 0.4) {
-      baseHealth = 0.65; // Normal crop vigor
-    } else if (plotHash > 0.25) {
-      baseHealth = 0.48; // Moderate water stress / early weed
-    } else {
-      baseHealth = 0.32;                     // Severely dry / tilled soil
-    }
-
-    // Add organic intra-field variation (micro-gradients)
-    const microNoise = Math.sin(lat * 2000) * Math.cos(lng * 2000) * 0.06;
-    const finalNdvi = baseHealth + microNoise;
-
-    // Clamp between -0.1 and 1.0
-    return Math.max(-0.1, Math.min(1.0, finalNdvi));
-  }
-
-  private ndviToRgb(val: number): { r: number; g: number; b: number } {
-    // NDVI Colormap scale (standard vegetation index coloring):
-    // < 0.1: Water / Snow / Road -> Yellow-White / Gray
-    // 0.1 - 0.3: Bare Soil -> Light Yellow / Beige
-    // 0.3 - 0.5: Sparse vegetation -> Light Green / Yellowish Green
-    // 0.5 - 0.7: Moderate canopy -> Medium Green
-    // >= 0.7: High dense canopy / Healthy wheat -> Deep Emerald Green
-
-    if (val < 0.15) {
-      return { r: 166, g: 97, b: 26 }; // Rich soil brown
-    } else if (val < 0.3) {
-      // Blend Soil to Sparse (Beige/Yellow to Light Green)
-      const pct = (val - 0.15) / 0.15;
-      return {
-        r: Math.round(223 * (1 - pct) + 245 * pct),
-        g: Math.round(194 * (1 - pct) + 245 * pct),
-        b: Math.round(124 * (1 - pct) + 120 * pct)
-      };
-    } else if (val < 0.5) {
-      // Light Green
-      const pct = (val - 0.3) / 0.2;
-      return {
-        r: Math.round(245 * (1 - pct) + 161 * pct),
-        g: Math.round(245 * (1 - pct) + 217 * pct),
-        b: Math.round(120 * (1 - pct) + 155 * pct)
-      };
-    } else if (val < 0.7) {
-      // Medium Forest Green
-      const pct = (val - 0.5) / 0.2;
-      return {
-        r: Math.round(161 * (1 - pct) + 76 * pct),
-        g: Math.round(217 * (1 - pct) + 160 * pct),
-        b: Math.round(155 * (1 - pct) + 80 * pct)
-      };
-    } else {
-      // Deep Emerald Green
-      const pct = Math.min(1.0, (val - 0.7) / 0.3);
-      return {
-        r: Math.round(76 * (1 - pct) + 1 * pct),
-        g: Math.round(160 * (1 - pct) + 104 * pct),
-        b: Math.round(80 * (1 - pct) + 40 * pct)
-      };
-    }
-  }
-
-  private ndviToHex(val: number): string {
-    const rgb = this.ndviToRgb(val);
-    return '#' + [rgb.r, rgb.g, rgb.b].map(x => x.toString(16).padStart(2, '0')).join('');
-  }
-
-  private inspectNdviValue(lat: number, lng: number): void {
-    const val = this.getNdviValueAt(lat, lng);
+  private inspectNdviValue(lat: number, lng: number, val: number): void {
     const color = this.ndviToHex(val);
     
     let status = 'Soil/Road';
@@ -288,12 +193,56 @@ export class NdviMapComponent implements OnInit, OnDestroy {
     this.hoverData.set({ lat, lng, val, color, status });
   }
 
-  ngOnDestroy(): void {
-    if (this.canvasLayer && this.map) {
-      this.canvasLayer.remove();
+  private ndviToRgb(val: number): { r: number; g: number; b: number } {
+    if (val < 0.15) return { r: 166, g: 97, b: 26 }; 
+    if (val < 0.3) {
+      const pct = (val - 0.15) / 0.15;
+      return {
+        r: Math.round(223 * (1 - pct) + 245 * pct),
+        g: Math.round(194 * (1 - pct) + 245 * pct),
+        b: Math.round(124 * (1 - pct) + 120 * pct)
+      };
     }
+    if (val < 0.5) {
+      const pct = (val - 0.3) / 0.2;
+      return {
+        r: Math.round(245 * (1 - pct) + 161 * pct),
+        g: Math.round(245 * (1 - pct) + 217 * pct),
+        b: Math.round(120 * (1 - pct) + 155 * pct)
+      };
+    }
+    if (val < 0.7) {
+      const pct = (val - 0.5) / 0.2;
+      return {
+        r: Math.round(161 * (1 - pct) + 76 * pct),
+        g: Math.round(217 * (1 - pct) + 160 * pct),
+        b: Math.round(155 * (1 - pct) + 80 * pct)
+      };
+    }
+    
+    const pct = Math.min(1.0, (val - 0.7) / 0.3);
+    return {
+      r: Math.round(76 * (1 - pct) + 1 * pct),
+      g: Math.round(160 * (1 - pct) + 104 * pct),
+      b: Math.round(80 * (1 - pct) + 40 * pct)
+    };
+  }
+
+  private ndviToHex(val: number): string {
+    const rgb = this.ndviToRgb(val);
+    return '#' + [rgb.r, rgb.g, rgb.b].map(x => x.toString(16).padStart(2, '0')).join('');
+  }
+
+  ngOnDestroy(): void {
+    if (this.hoverRafId) cancelAnimationFrame(this.hoverRafId);
+    
+    if (this.geoRasterLayer && this.map) {
+      this.geoRasterLayer.remove();
+    }
+    
     if (this.map) {
-      this.map.off();
+      this.map.off('mousemove', this.onMouseMove);
+      this.map.off('mouseout', this.onMouseOut);
       this.map.remove();
       this.map = null;
     }
