@@ -40,21 +40,6 @@
       [scanStatusText]="scanStatusText()"
       [scanProgress]="scanProgress()"
     ></app-progress-bar>
-    
-    <div class="mt-3 flex gap-4">
-      <div class="flex flex-col">
-        <span class="text-[9px] text-zinc-500 uppercase font-bold">Neural Load</span>
-        <div class="h-1 w-16 bg-white/5 rounded-full mt-1 overflow-hidden">
-          <div class="h-full bg-primary/40" [style.width.%]="scanProgress() * 0.8"></div>
-        </div>
-      </div>
-      <div class="flex flex-col">
-        <span class="text-[9px] text-zinc-500 uppercase font-bold">V-Buffer</span>
-        <div class="h-1 w-16 bg-white/5 rounded-full mt-1 overflow-hidden">
-          <div class="h-full bg-primary/40" [style.width.%]="scanProgress() * 0.6"></div>
-        </div>
-      </div>
-    </div>
   </div>
   }
 
